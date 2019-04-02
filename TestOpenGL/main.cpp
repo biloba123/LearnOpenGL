@@ -72,50 +72,49 @@ int main() {
     //创建链接着色器程序对象
     GLuint program = loadProgram(vShaderSource, fShaderSource);
     
-    GLfloat vertices[] = {
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
+    GLfloat verticeArrs[][9] = {
+        {0.25f, 0.25f, 0.0f,
+            0.75f, 0.25f, 0.0f,
+            0.5f, 0.75f, 0.0f},
+        {-0.25f, -0.25f, -0.0f,
+            -0.75f, -0.25f, -0.0f,
+            -0.5f, -0.75f, -0.0f}
     };
     
-    GLubyte elements[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    GLuint vao, buffers[2];
-    glGenVertexArrays(1, &vao);
+   
+    
+    GLuint vaos[2], buffers[2];
+    glGenVertexArrays(2, vaos);
     glGenBuffers(2, buffers);
     
-    glBindVertexArray(vao);
-    
-    //定点缓冲区对象
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    //定点属性配置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (void *)0);
-    glEnableVertexAttribArray(0);
-    
-    //索引缓冲区对象
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    for (int i = 0; i < 2; i++) {
+        glBindVertexArray(vaos[i]);
+        
+        //定点缓冲区对象
+        glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verticeArrs[i]), verticeArrs[i], GL_STATIC_DRAW);
+        //定点属性配置
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (void *)0);
+        glEnableVertexAttribArray(0);
+        
+        glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
     
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     
     //线框模式
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         
         glUseProgram(program);
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
+        glBindVertexArray(vaos[0]);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(vaos[1]);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);
@@ -123,7 +122,7 @@ int main() {
         glfwPollEvents();
     }
     
-    glDeleteVertexArrays(1, &vao);
+    glDeleteVertexArrays(2, vaos);
     glDeleteBuffers(2, buffers);
     
     //释放资源
