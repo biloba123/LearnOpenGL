@@ -22,11 +22,18 @@ const char *vShaderSource =
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}";
 
-const char *fShaderSource =
+const char *fShaderSource1 =
     "#version 330 core\n"
     "out vec4 fragColor;\n"
     "void main() {\n"
     "    fragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n";
+
+const char *fShaderSource2 =
+    "#version 330 core\n"
+    "out vec4 fragColor;\n"
+    "void main() {\n"
+    "    fragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
     "}\n";
 
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
@@ -70,7 +77,8 @@ int main() {
     
     
     //创建链接着色器程序对象
-    GLuint program = loadProgram(vShaderSource, fShaderSource);
+    GLuint program1 = loadProgram(vShaderSource, fShaderSource1),
+        program2 = loadProgram(vShaderSource, fShaderSource2);
     
     GLfloat verticeArrs[][9] = {
         {0.25f, 0.25f, 0.0f,
@@ -110,9 +118,11 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glUseProgram(program);
+        glUseProgram(program1);
         glBindVertexArray(vaos[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        glUseProgram(program2);
         glBindVertexArray(vaos[1]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         
