@@ -38,6 +38,8 @@
 		FA265D2822520B0A000E9433 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../usr/local/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		FA265D2A22520C90000E9433 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../usr/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		FA265D2C22521582000E9433 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../Projects_OpenGL/glad/src/glad.c; sourceTree = "<group>"; };
+		FAEB8BAB2254F62D00AB1A7A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
+		FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,8 @@
 		FA265D1D22520076000E9433 /* TestOpenGL */ = {
 			isa = PBXGroup;
 			children = (
+				FAEB8BAB2254F62D00AB1A7A /* stb_image.h */,
+				FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */,
 				FA265D2C22521582000E9433 /* glad.c */,
 				FA265D1E22520076000E9433 /* main.cpp */,
 				FA0EFBFB225498B6003791B5 /* Shader.cpp */,

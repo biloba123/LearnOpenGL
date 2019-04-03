@@ -13,6 +13,7 @@
 #include <cmath>
 
 #include "Shader.hpp"
+#include "stb_image_wrapper.h"
 using namespace std;
 
 const unsigned int SCR_WIDTH = 800;
