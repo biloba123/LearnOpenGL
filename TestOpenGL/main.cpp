@@ -10,7 +10,6 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <cmath>
 
 #include "Shader.hpp"
 using namespace std;
@@ -70,13 +69,10 @@ int main() {
         0.0f, 1.0f, 0.0f,
         -0.5f, -0.5f, 0.0f,
         0.0f, 0.0f, 1.0f,
-        -0.5f, 0.5f, 0.0f,
-        1.0f, 1.0f, 1.0f
     };
     
     GLubyte elements[] = {
-        0, 1, 2,
-        2, 3, 0
+        0, 1, 2
     };
 
     GLuint vao, buffers[2];
@@ -111,12 +107,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         
         shaderProgram.use();
-        
-//        float timeValue = glfwGetTime();
-//        float greenValue = sin(timeValue) / 2.0f + 0.5f;
-//        GLint location = glGetUniformLocation(program, "ourColor");
-//        GLfloat color[] = {0.0f, greenValue, 0.0f, 1.0f};
-//        glUniform4fv(location, 1, color);
         
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
