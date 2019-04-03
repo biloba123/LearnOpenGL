@@ -18,15 +18,18 @@ const unsigned int SCR_HEIGHT = 600;
 const char *vShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "out vec4 vertexColor;\n"
     "void main() {\n"
     "    gl_Position = vec4(aPos, 1.0);\n"
+    "    vertexColor = vec4(1.0, 1.0, 0.5, 1.0);\n"
     "}";
 
 const char *fShaderSource =
     "#version 330 core\n"
+    "in vec4 vertexColor;\n"
     "out vec4 fragColor;\n"
     "void main() {\n"
-    "    fragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "    fragColor = vertexColor;\n"
     "}\n";
 
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
@@ -72,6 +75,10 @@ int main() {
     //创建链接着色器程序对象
     GLuint program = loadProgram(vShaderSource, fShaderSource);
     
+    if (!program) {
+        return -1;
+    }
+    
     GLfloat vertices[] = {
         0.5f, 0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -107,7 +114,7 @@ int main() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     
     //线框模式
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
