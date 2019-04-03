@@ -40,6 +40,7 @@
 		FA265D2C22521582000E9433 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../Projects_OpenGL/glad/src/glad.c; sourceTree = "<group>"; };
 		FAEB8BAB2254F62D00AB1A7A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
 		FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
+		FAEB8BAD2254F7BE00AB1A7A /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = container.jpg; path = ../../../Downloads/container.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +82,7 @@
 				FA265D2C22521582000E9433 /* glad.c */,
 				FA265D1E22520076000E9433 /* main.cpp */,
 				FA0EFBFB225498B6003791B5 /* Shader.cpp */,
+				FAEB8BAD2254F7BE00AB1A7A /* container.jpg */,
 				FA0EFBFC225498B6003791B5 /* Shader.hpp */,
 				FA0EFBFE2254A20B003791B5 /* shader.vs */,
 				FA0EFBFF2254A257003791B5 /* shader.fs */,
