@@ -39,6 +39,10 @@ public:
         glUseProgram(ID);
     }
     
+    void setFloat(const string &name, GLfloat value) {
+        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+    }
+    
 private:
     string readContent(const char *path) {
         string content;

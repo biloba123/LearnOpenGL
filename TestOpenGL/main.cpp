@@ -107,7 +107,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         
         shaderProgram.use();
-        glUniform1f(glGetUniformLocation(shaderProgram.ID, "offset"), 0.5f);
+        shaderProgram.setFloat("offset", 0.5f);
         
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
