@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0EFBFD225498B6003791B5 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0EFBFB225498B6003791B5 /* Shader.cpp */; };
 		FA265D1F22520076000E9433 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA265D1E22520076000E9433 /* main.cpp */; };
 		FA265D272252013B000E9433 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D262252013B000E9433 /* OpenGL.framework */; };
 		FA265D2922520B0A000E9433 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D2822520B0A000E9433 /* libGLEW.2.1.0.dylib */; };
@@ -27,6 +28,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA0EFBFB225498B6003791B5 /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
+		FA0EFBFC225498B6003791B5 /* Shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Shader.hpp; sourceTree = "<group>"; };
+		FA0EFBFE2254A20B003791B5 /* shader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.vs; sourceTree = "<group>"; };
+		FA0EFBFF2254A257003791B5 /* shader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.fs; sourceTree = "<group>"; };
 		FA265D1B22520076000E9433 /* TestOpenGL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenGL; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA265D1E22520076000E9433 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FA265D262252013B000E9433 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -71,6 +76,10 @@
 			children = (
 				FA265D2C22521582000E9433 /* glad.c */,
 				FA265D1E22520076000E9433 /* main.cpp */,
+				FA0EFBFB225498B6003791B5 /* Shader.cpp */,
+				FA0EFBFC225498B6003791B5 /* Shader.hpp */,
+				FA0EFBFE2254A20B003791B5 /* shader.vs */,
+				FA0EFBFF2254A257003791B5 /* shader.fs */,
 			);
 			path = TestOpenGL;
 			sourceTree = "<group>";
@@ -142,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA265D1F22520076000E9433 /* main.cpp in Sources */,
+				FA0EFBFD225498B6003791B5 /* Shader.cpp in Sources */,
 				FA265D2D22521582000E9433 /* glad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

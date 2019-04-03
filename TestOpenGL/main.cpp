@@ -11,32 +11,14 @@
 
 #include <iostream>
 #include <cmath>
+
+#include "Shader.hpp"
 using namespace std;
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char *vShaderSource =
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 vertexColor;\n"
-    "void main() {\n"
-    "    gl_Position = vec4(aPos, 1.0);\n"
-    "    vertexColor = aColor;\n"
-    "}";
-
-const char *fShaderSource =
-    "#version 330 core\n"
-    "in vec3 vertexColor;\n"
-    "out vec4 fragColor;\n"
-    "void main() {\n"
-    "    fragColor = vec4(vertexColor, 1.0);\n"
-    "}\n";
-
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
-GLuint loadShader(GLenum type, const char *shaderSrc);
-GLuint loadProgram(const char *vertShaderSrc, const char *fragShaderSrc);
 
 int main() {
     //初始化GLFW
@@ -75,9 +57,9 @@ int main() {
     
     
     //创建链接着色器程序对象
-    GLuint program = loadProgram(vShaderSource, fShaderSource);
-    
-    if (!program) {
+    Shader shaderProgram("/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL/shader.vs", "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL/shader.fs");
+   
+    if (!shaderProgram.ID) {
         return -1;
     }
     
@@ -128,7 +110,7 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glUseProgram(program);
+        shaderProgram.use();
         
 //        float timeValue = glfwGetTime();
 //        float greenValue = sin(timeValue) / 2.0f + 0.5f;
@@ -156,58 +138,4 @@ int main() {
 
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height) {
     glViewport(0, 0, width, height);
-}
-
-GLuint loadShader (GLenum type, const char *shaderSrc) {
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &shaderSrc, NULL);
-    glCompileShader(shader);
-    
-    GLint success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        GLint infoLen = 0;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 1) {
-            char info[infoLen];
-            glGetShaderInfoLog(shader, infoLen, NULL, info);
-            cout << "ERROR: Shader compilation failed:\n" << info << endl;
-        }
-        
-        glDeleteShader(shader);
-        return 0;
-    }
-    
-    return shader;
-}
-
-GLuint loadProgram(const char *vertShaderSrc, const char *fragShaderSrc) {
-    GLuint vShader = loadShader(GL_VERTEX_SHADER, vertShaderSrc);
-    GLuint fShader = loadShader(GL_FRAGMENT_SHADER, fragShaderSrc);
-    
-    if (!vShader || !fShader) {
-        return 0;
-    }
-    
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vShader);
-    glAttachShader(program, fShader);
-    glLinkProgram(program);
-    
-    GLint success;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if (!success) {
-        GLint infoLen = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 1) {
-            char info[infoLen];
-            glGetProgramInfoLog(program, infoLen, NULL, info);
-            cout << "ERROR: Program linking failed:\n" << info << endl;
-        }
-        
-        glDeleteProgram(program);
-        return 0;
-    }
-    
-    return program;
 }
