@@ -10,6 +10,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 const unsigned int SCR_WIDTH = 800;
@@ -18,18 +19,16 @@ const unsigned int SCR_HEIGHT = 600;
 const char *vShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "out vec4 vertexColor;\n"
     "void main() {\n"
     "    gl_Position = vec4(aPos, 1.0);\n"
-    "    vertexColor = vec4(1.0, 1.0, 0.5, 1.0);\n"
     "}";
 
 const char *fShaderSource =
     "#version 330 core\n"
-    "in vec4 vertexColor;\n"
+    "uniform vec4 ourColor;\n"
     "out vec4 fragColor;\n"
     "void main() {\n"
-    "    fragColor = vertexColor;\n"
+    "    fragColor = ourColor;\n"
     "}\n";
 
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
@@ -121,6 +120,13 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         
         glUseProgram(program);
+        
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        GLint location = glGetUniformLocation(program, "ourColor");
+        GLfloat color[] = {0.0f, greenValue, 0.0f, 1.0f};
+        glUniform4fv(location, 1, color);
+        
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
         
