@@ -43,6 +43,10 @@ public:
         glUniform1i(glad_glGetUniformLocation(ID, name), value);
     }
     
+    void setFloatUniform(const char *name, GLfloat value) {
+        glUniform1f(glad_glGetUniformLocation(ID, name), value);
+    }
+    
 private:
     string readContent(const char *path) {
         string content;
