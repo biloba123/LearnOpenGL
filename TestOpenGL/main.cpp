@@ -18,10 +18,12 @@ using namespace std;
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
 const char *PROJECT_ROOT = "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL";
 
+float mixValue = 0.2f;
 
+bool isKeyPressed(GLFWwindow *window, int key);
+void processInput(GLFWwindow *window);
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
 char *getAbsolutePath(const char *relativePath);
 
@@ -67,7 +69,7 @@ int main() {
     free(vsPath);
     free(fsPath);
     
-   
+    
     if (!shaderProgram.ID) {
         return -1;
     }
@@ -91,7 +93,7 @@ int main() {
         0, 1, 2,
         2, 3, 0
     };
-
+    
     GLuint vao, buffers[2];
     glGenVertexArrays(1, &vao);
     glGenBuffers(2, buffers);
@@ -152,10 +154,12 @@ int main() {
     shaderProgram.setIntUniform("ourTexture2", 1);
     
     //线框模式
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
+        processInput(window);
+        
         glClear(GL_COLOR_BUFFER_BIT);
         
         shaderProgram.use();
@@ -164,6 +168,7 @@ int main() {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, textures[i]);
         }
+        shaderProgram.setFloatUniform("mixValue", mixValue);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
         
         //交换颜色缓冲（双缓冲）
@@ -179,6 +184,30 @@ int main() {
     glfwTerminate();
     return 0;
     
+}
+
+void processInput(GLFWwindow *window) {
+    if (isKeyPressed(window, GLFW_KEY_ESCAPE)) {
+        glfwSetWindowShouldClose(window, true);
+    }
+    
+    if (isKeyPressed(window, GLFW_KEY_UP)) {
+        mixValue += 0.001f;
+        if (mixValue > 1.0f) {
+            mixValue = 1.0f;
+        }
+    }
+    
+    if (isKeyPressed(window, GLFW_KEY_DOWN)) {
+        mixValue -= 0.001f;
+        if (mixValue < 0.0f) {
+            mixValue = 0.0f;
+        }
+    }
+}
+
+bool isKeyPressed(GLFWwindow *window, int key) {
+    return glfwGetKey(window, key) == GLFW_PRESS;
 }
 
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height) {
