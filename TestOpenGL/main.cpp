@@ -75,16 +75,16 @@ int main() {
     GLfloat vertices[] = {
         0.5f, 0.5f, 0.0f,   //vertex
         1.0f, 0.0f, 0.0f,   //color
-        1.5f, 1.5f,          //texture coordinate
+        0.075f, 0.075f,          //texture coordinate
         0.5f, -0.5f, 0.0f,
         0.0f, 1.0f, 0.0f,
-        1.5f, -0.5f,
+        0.075f, 0.025f,
         -0.5f, -0.5f, 0.0f,
         0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,
+        0.025f, 0.025f,
         -0.5f, 0.5f, 0.0f,
         1.0f, 1.0f, 0.0f,
-        -0.5f, 1.5f
+        0.025f, 0.075f
     };
     
     GLubyte elements[] = {
@@ -125,12 +125,10 @@ int main() {
     for (int i = 0; i < 2; i++) {
         glBindTexture(GL_TEXTURE_2D, textures[i]);
         //设置纹理对象参数
-        GLfloat borderClor[] ={1.0f, 1.0f, 0.0f, 1.0f};
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderClor);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //加载并设置纹理图像
         char *absoluteImgPath = getAbsolutePath(imgPaths[i]);
         GLint width, height, comp;
