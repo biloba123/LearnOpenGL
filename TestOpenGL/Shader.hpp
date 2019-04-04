@@ -39,6 +39,10 @@ public:
         glUseProgram(ID);
     }
     
+    void setIntUniform(const char *name, GLint value) {
+        glUniform1i(glad_glGetUniformLocation(ID, name), value);
+    }
+    
 private:
     string readContent(const char *path) {
         string content;

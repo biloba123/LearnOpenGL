@@ -19,7 +19,11 @@ using namespace std;
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+const char *PROJECT_ROOT = "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL";
+
+
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
+char *getAbsolutePath(const char *relativePath);
 
 int main() {
     //初始化GLFW
@@ -58,7 +62,11 @@ int main() {
     
     
     //创建链接着色器程序对象
-    Shader shaderProgram("/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL/shader.vs", "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL/shader.fs");
+    char *vsPath = getAbsolutePath("/shader.vs"), *fsPath = getAbsolutePath("/shader.fs");
+    Shader shaderProgram(vsPath, fsPath);
+    free(vsPath);
+    free(fsPath);
+    
    
     if (!shaderProgram.ID) {
         return -1;
@@ -67,12 +75,16 @@ int main() {
     GLfloat vertices[] = {
         0.5f, 0.5f, 0.0f,   //vertex
         1.0f, 0.0f, 0.0f,   //color
+        1.0f, 1.0f,          //texture coordinate
         0.5f, -0.5f, 0.0f,
         0.0f, 1.0f, 0.0f,
+        1.0f, 0.0f,
         -0.5f, -0.5f, 0.0f,
         0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f,
         -0.5f, 0.5f, 0.0f,
-        1.0f, 1.0f, 1.0f
+        1.0f, 1.0f, 0.0f,
+        0.0f, 1.0f
     };
     
     GLubyte elements[] = {
@@ -90,10 +102,12 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     //顶点属性配置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (void *)(sizeof(GLfloat) * 3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 3));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 6));
+    glEnableVertexAttribArray(2);
     
     //索引缓冲区对象
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
@@ -102,7 +116,40 @@ int main() {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    //生成纹理
+    GLuint textures[2];
+    const char *imgPaths[] = {"/container.jpg", "/awesomeface.png"};
+    GLenum imgTypes[] = {GL_RGB, GL_RGBA};
+    glGenTextures(2, textures);
+    stbi_set_flip_vertically_on_load(true);
+    for (int i = 0; i < 2; i++) {
+        glBindTexture(GL_TEXTURE_2D, textures[i]);
+        //设置纹理对象参数
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //加载并设置纹理图像
+        char *absoluteImgPath = getAbsolutePath(imgPaths[i]);
+        GLint width, height, comp;
+        unsigned char *data = stbi_load(absoluteImgPath, &width, &height, &comp, 0);
+        if (data) {
+            glTexImage2D(GL_TEXTURE_2D, 0, imgTypes[i], width, height, 0, imgTypes[i], GL_UNSIGNED_BYTE, data);
+            //多级渐进纹理
+            glGenerateMipmap(GL_TEXTURE_2D);
+        } else {
+            cout << "Failed to load texture" << endl;
+        }
+        stbi_image_free(data);
+        free(absoluteImgPath);
+    }
+    
+    
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    
+    shaderProgram.use();
+    shaderProgram.setIntUniform("ourTexture1", 0);
+    shaderProgram.setIntUniform("ourTexture2", 1);
     
     //线框模式
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -112,14 +159,11 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         
         shaderProgram.use();
-        
-//        float timeValue = glfwGetTime();
-//        float greenValue = sin(timeValue) / 2.0f + 0.5f;
-//        GLint location = glGetUniformLocation(program, "ourColor");
-//        GLfloat color[] = {0.0f, greenValue, 0.0f, 1.0f};
-//        glUniform4fv(location, 1, color);
-        
         glBindVertexArray(vao);
+        for (int i = 0; i < 2; i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
+        }
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
         
         //交换颜色缓冲（双缓冲）
@@ -139,4 +183,13 @@ int main() {
 
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height) {
     glViewport(0, 0, width, height);
+}
+
+char *getAbsolutePath(const char *relativePath) {
+    char *absolutePath = (char *)malloc(strlen(PROJECT_ROOT) + strlen(relativePath) + 1);
+    
+    strcpy(absolutePath, PROJECT_ROOT);
+    strcat(absolutePath, relativePath);
+    
+    return absolutePath;
 }
