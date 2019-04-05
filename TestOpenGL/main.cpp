@@ -8,6 +8,9 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <cmath>
@@ -146,7 +149,6 @@ int main() {
         free(absoluteImgPath);
     }
     
-    
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     
     shaderProgram.use();
@@ -162,6 +164,11 @@ int main() {
         
         glClear(GL_COLOR_BUFFER_BIT);
         
+        //构造变化矩阵
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        
         shaderProgram.use();
         glBindVertexArray(vao);
         for (int i = 0; i < 2; i++) {
@@ -169,6 +176,8 @@ int main() {
             glBindTexture(GL_TEXTURE_2D, textures[i]);
         }
         shaderProgram.setFloatUniform("mixValue", mixValue);
+        glad_glUniformMatrix4fv(glad_glGetUniformLocation(shaderProgram.ID, "transform"),
+                                1, GL_FALSE, glm::value_ptr(trans));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
         
         //交换颜色缓冲（双缓冲）
