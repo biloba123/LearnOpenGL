@@ -164,20 +164,31 @@ int main() {
         
         glClear(GL_COLOR_BUFFER_BIT);
         
-        //构造变化矩阵
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        
         shaderProgram.use();
+        //VAO
         glBindVertexArray(vao);
+        //Texture
         for (int i = 0; i < 2; i++) {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, textures[i]);
         }
+        
         shaderProgram.setFloatUniform("mixValue", mixValue);
-        glad_glUniformMatrix4fv(glad_glGetUniformLocation(shaderProgram.ID, "transform"),
-                                1, GL_FALSE, glm::value_ptr(trans));
+        
+        GLint transLoc = glGetUniformLocation(shaderProgram.ID, "transform");
+        //变换矩阵
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
+        
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+        float scaleValue = sin(glfwGetTime()) / 2.0f + 0.5f;
+        trans = glm::scale(trans, glm::vec3(scaleValue));
+        glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
         
         //交换颜色缓冲（双缓冲）
