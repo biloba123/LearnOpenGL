@@ -227,8 +227,10 @@ int main() {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
             model = glm::rotate(model, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
+            if (i % 3 == 0) {
+                model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+            }
             shaderProgram.setMat4("model", model);
-            
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         
