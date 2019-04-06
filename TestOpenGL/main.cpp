@@ -78,24 +78,67 @@ int main() {
     }
     
     GLfloat vertices[] = {
-        0.5f, 0.5f, 0.0f,   //vertex
-        1.0f, 0.0f, 0.0f,   //color
-        1.0f, 1.0f,          //texture coordinate
-        0.5f, -0.5f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        1.0f, 1.0f, 0.0f,
-        0.0f, 1.0f
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     
-    GLubyte elements[] = {
-        0, 1, 2,
-        2, 3, 0
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
     };
+
+    
+//    GLubyte elements[] = {
+//        0, 1, 2,
+//        2, 3, 0
+//    };
     
     GLuint vao, buffers[2];
     glGenVertexArrays(1, &vao);
@@ -107,16 +150,14 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     //顶点属性配置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void *)(sizeof(GLfloat) * 3));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 6));
-    glEnableVertexAttribArray(2);
     
     //索引缓冲区对象
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
     
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -152,22 +193,25 @@ int main() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     
     shaderProgram.use();
-    shaderProgram.setIntUniform("ourTexture1", 0);
-    shaderProgram.setIntUniform("ourTexture2", 1);
+    shaderProgram.setInt("ourTexture1", 0);
+    shaderProgram.setInt("ourTexture2", 1);
     
     //线框模式
     //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_DEPTH_TEST);
     
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         //构造变化矩阵
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        
         
         shaderProgram.use();
         glBindVertexArray(vao);
@@ -175,10 +219,18 @@ int main() {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, textures[i]);
         }
-        shaderProgram.setFloatUniform("mixValue", mixValue);
-        glad_glUniformMatrix4fv(glad_glGetUniformLocation(shaderProgram.ID, "transform"),
-                                1, GL_FALSE, glm::value_ptr(trans));
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void *)0);
+        shaderProgram.setMat4("view", view);
+        shaderProgram.setMat4("projection", projection);
+        shaderProgram.setFloat("mixValue", mixValue);
+        
+        for (int i = 0; i < 10; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            model = glm::rotate(model, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
+            shaderProgram.setMat4("model", model);
+            
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);

@@ -10,6 +10,8 @@
 #define Shader_hpp
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -39,12 +41,16 @@ public:
         glUseProgram(ID);
     }
     
-    void setIntUniform(const char *name, GLint value) {
-        glUniform1i(glad_glGetUniformLocation(ID, name), value);
+    void setInt(const char *name, GLint value) {
+        glUniform1i(glGetUniformLocation(ID, name), value);
     }
     
-    void setFloatUniform(const char *name, GLfloat value) {
-        glUniform1f(glad_glGetUniformLocation(ID, name), value);
+    void setFloat(const char *name, GLfloat value) {
+        glUniform1f(glGetUniformLocation(ID, name), value);
+    }
+    
+    void setMat4(const char *name, glm::mat4 mat) {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(mat));
     }
     
 private:
