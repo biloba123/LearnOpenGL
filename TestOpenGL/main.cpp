@@ -25,6 +25,13 @@ const char *PROJECT_ROOT = "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpen
 
 float mixValue = 0.2f;
 
+//Camera
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+float lastFrame = 0.0f; //上一帧的时间
+float deltaTime = 0.0f; //当前帧与上一帧时间差
+
 bool isKeyPressed(GLFWwindow *window, int key);
 void processInput(GLFWwindow *window);
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
@@ -202,6 +209,10 @@ int main() {
     
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        
         processInput(window);
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -209,9 +220,7 @@ int main() {
         //构造变化矩阵
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
-        float radius = 10;
-        float camX = radius * sin(glfwGetTime()), camZ = radius * cos(glfwGetTime());
-        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
         
@@ -266,6 +275,23 @@ void processInput(GLFWwindow *window) {
         if (mixValue < 0.0f) {
             mixValue = 0.0f;
         }
+    }
+    
+    float cameraSpeed = deltaTime * 2.5f;
+    if (isKeyPressed(window, GLFW_KEY_W)) {
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    
+    if (isKeyPressed(window, GLFW_KEY_S)) {
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    
+    if (isKeyPressed(window, GLFW_KEY_A)) {
+        cameraPos += cameraSpeed * glm::normalize(glm::cross(cameraUp, cameraFront));
+    }
+    
+    if (isKeyPressed(window, GLFW_KEY_D)) {
+        cameraPos -= cameraSpeed * glm::normalize(glm::cross(cameraUp, cameraFront));
     }
 }
 
