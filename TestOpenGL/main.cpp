@@ -16,6 +16,7 @@
 #include <cmath>
 
 #include "Shader.hpp"
+#include "Camera.hpp"
 #include "stb_image_wrapper.h"
 using namespace std;
 
@@ -26,16 +27,11 @@ const char *PROJECT_ROOT = "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpen
 float mixValue = 0.2f;
 
 //Camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastFrame = 0.0f; //上一帧的时间
 float deltaTime = 0.0f; //当前帧与上一帧时间差
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
-float yaw = -90.0f; //偏航角，为0时camera方向指向x轴正方向
-float pitch = 0.0f; //俯仰角
-float fov = 45.0f; //视野
 
 bool isKeyPressed(GLFWwindow *window, int key);
 void processInput(GLFWwindow *window);
@@ -233,8 +229,8 @@ int main() {
         //构造变化矩阵
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        view = camera.getViewMatrix();
+        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
         
         shaderProgram.use();
@@ -290,21 +286,20 @@ void processInput(GLFWwindow *window) {
         }
     }
     
-    float cameraSpeed = deltaTime * 2.5f;
     if (isKeyPressed(window, GLFW_KEY_W)) {
-        cameraPos += cameraSpeed * cameraFront;
+        camera.processKeyboard(FORWARD, deltaTime);
     }
     
     if (isKeyPressed(window, GLFW_KEY_S)) {
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.processKeyboard(BACKWARD, deltaTime);
     }
     
     if (isKeyPressed(window, GLFW_KEY_A)) {
-        cameraPos += cameraSpeed * glm::normalize(glm::cross(cameraUp, cameraFront));
+        camera.processKeyboard(LEFT, deltaTime);
     }
     
     if (isKeyPressed(window, GLFW_KEY_D)) {
-        cameraPos -= cameraSpeed * glm::normalize(glm::cross(cameraUp, cameraFront));
+        camera.processKeyboard(RIGHT, deltaTime);
     }
 }
 
@@ -320,23 +315,11 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
     
-    float sensitivity = 0.05f;
-    yaw += xOffset * sensitivity;
-    pitch += yOffset * sensitivity;
-    pitch = min(max(pitch, -89.0f), 89.0f);
-    
-    cout << pitch << "\t" << yaw << endl;
-    
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(front);
+    camera.processMouseMovement(xOffset, yOffset);
 }
 
 void scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
-    fov -= yoffset;
-    fov = min(max(fov, 1.0f), 75.0f);
+    camera.processMouseScroll(yoffset);
 }
 
 bool isKeyPressed(GLFWwindow *window, int key) {
