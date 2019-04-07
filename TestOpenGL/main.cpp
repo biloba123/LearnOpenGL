@@ -35,11 +35,13 @@ float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 float yaw = -90.0f; //偏航角，为0时camera方向指向x轴正方向
 float pitch = 0.0f; //俯仰角
+float fov = 45.0f; //视野
 
 bool isKeyPressed(GLFWwindow *window, int key);
 void processInput(GLFWwindow *window);
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
 void mouseCallback(GLFWwindow *window, double xpos, double ypos);
+void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 char *getAbsolutePath(const char *relativePath);
 
 int main() {
@@ -71,6 +73,8 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffersizeCallback);
     //光标位置回调
     glfwSetCursorPosCallback(window, mouseCallback);
+    //鼠标滚轮回调
+    glfwSetScrollCallback(window, scrollCallback);
     
     //捕捉光标
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -83,7 +87,7 @@ int main() {
     
     
     //创建链接着色器程序对象
-    char *vsPath = getAbsolutePath("/shader.vs"), *fsPath = getAbsolutePath("/shader.fs");
+    char *vsPath = getAbsolutePath("/resource/shader.vs"), *fsPath = getAbsolutePath("/resource/shader.fs");
     Shader shaderProgram(vsPath, fsPath);
     free(vsPath);
     free(fsPath);
@@ -180,7 +184,7 @@ int main() {
     
     //生成纹理
     GLuint textures[2];
-    const char *imgPaths[] = {"/container.jpg", "/awesomeface.png"};
+    const char *imgPaths[] = {"/resource/container.jpg", "/resource/awesomeface.png"};
     GLenum imgTypes[] = {GL_RGB, GL_RGBA};
     glGenTextures(2, textures);
     stbi_set_flip_vertically_on_load(true);
@@ -230,7 +234,7 @@ int main() {
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
         
         shaderProgram.use();
@@ -328,6 +332,11 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     front.y = sin(glm::radians(pitch));
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(front);
+}
+
+void scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
+    fov -= yoffset;
+    fov = min(max(fov, 1.0f), 75.0f);
 }
 
 bool isKeyPressed(GLFWwindow *window, int key) {

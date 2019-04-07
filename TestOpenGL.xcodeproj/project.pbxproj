@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FA0EFBFD225498B6003791B5 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0EFBFB225498B6003791B5 /* Shader.cpp */; };
+		FA129CEF2259F37F00659B73 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA129CED2259F37F00659B73 /* Camera.cpp */; };
 		FA1ECF272259C7FB00E4EFF8 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */; };
 		FA265D1F22520076000E9433 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA265D1E22520076000E9433 /* main.cpp */; };
 		FA265D272252013B000E9433 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D262252013B000E9433 /* OpenGL.framework */; };
@@ -32,6 +33,10 @@
 		FA0EFBFC225498B6003791B5 /* Shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Shader.hpp; sourceTree = "<group>"; };
 		FA0EFBFE2254A20B003791B5 /* shader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.vs; sourceTree = "<group>"; };
 		FA0EFBFF2254A257003791B5 /* shader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.fs; sourceTree = "<group>"; };
+		FA129CED2259F37F00659B73 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		FA129CEE2259F37F00659B73 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		FA129CF42259F58100659B73 /* glad.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../../Projects_OpenGL/glad/src/glad.c; sourceTree = "<group>"; };
+		FA129CF62259F58800659B73 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
 		FA16FB4F22559C1800010A03 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		FA265D1B22520076000E9433 /* TestOpenGL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenGL; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,7 +46,6 @@
 		FA265D2A22520C90000E9433 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../usr/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		FA265D2C22521582000E9433 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../Projects_OpenGL/glad/src/glad.c; sourceTree = "<group>"; };
 		FA2ADC662255BA91004BEA61 /* awesomeface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = awesomeface.png; sourceTree = "<group>"; };
-		FAEB8BAB2254F62D00AB1A7A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
 		FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +63,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FA129CF02259F47D00659B73 /* resource */ = {
+			isa = PBXGroup;
+			children = (
+				FA16FB4F22559C1800010A03 /* container.jpg */,
+				FA2ADC662255BA91004BEA61 /* awesomeface.png */,
+				FA0EFBFE2254A20B003791B5 /* shader.vs */,
+				FA0EFBFF2254A257003791B5 /* shader.fs */,
+			);
+			path = resource;
+			sourceTree = "<group>";
+		};
+		FA129CF12259F53D00659B73 /* thirdLib */ = {
+			isa = PBXGroup;
+			children = (
+				FA129CF62259F58800659B73 /* stb_image.h */,
+				FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */,
+				FA129CF42259F58100659B73 /* glad.c */,
+			);
+			path = thirdLib;
+			sourceTree = "<group>";
+		};
 		FA265D1222520076000E9433 = {
 			isa = PBXGroup;
 			children = (
@@ -79,16 +104,14 @@
 		FA265D1D22520076000E9433 /* TestOpenGL */ = {
 			isa = PBXGroup;
 			children = (
-				FA16FB4F22559C1800010A03 /* container.jpg */,
-				FAEB8BAB2254F62D00AB1A7A /* stb_image.h */,
-				FA2ADC662255BA91004BEA61 /* awesomeface.png */,
-				FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */,
+				FA129CED2259F37F00659B73 /* Camera.cpp */,
+				FA129CEE2259F37F00659B73 /* Camera.hpp */,
 				FA265D2C22521582000E9433 /* glad.c */,
 				FA265D1E22520076000E9433 /* main.cpp */,
+				FA129CF12259F53D00659B73 /* thirdLib */,
+				FA129CF02259F47D00659B73 /* resource */,
 				FA0EFBFB225498B6003791B5 /* Shader.cpp */,
 				FA0EFBFC225498B6003791B5 /* Shader.hpp */,
-				FA0EFBFE2254A20B003791B5 /* shader.vs */,
-				FA0EFBFF2254A257003791B5 /* shader.fs */,
 			);
 			path = TestOpenGL;
 			sourceTree = "<group>";
@@ -160,6 +183,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA129CEF2259F37F00659B73 /* Camera.cpp in Sources */,
 				FA265D1F22520076000E9433 /* main.cpp in Sources */,
 				FA0EFBFD225498B6003791B5 /* Shader.cpp in Sources */,
 				FA265D2D22521582000E9433 /* glad.c in Sources */,
