@@ -31,10 +31,15 @@ glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 float lastFrame = 0.0f; //上一帧的时间
 float deltaTime = 0.0f; //当前帧与上一帧时间差
+float lastX = SCR_WIDTH / 2;
+float lastY = SCR_HEIGHT / 2;
+float pitch = 0.0f; //俯仰角
+float yaw = 0.0f; //偏航角
 
 bool isKeyPressed(GLFWwindow *window, int key);
 void processInput(GLFWwindow *window);
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
+void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 char *getAbsolutePath(const char *relativePath);
 
 int main() {
@@ -71,6 +76,8 @@ int main() {
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     //设置窗口大小改变回调
     glfwSetFramebufferSizeCallback(window, framebuffersizeCallback);
+    //捕捉光标
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     
     //创建链接着色器程序对象
@@ -293,6 +300,23 @@ void processInput(GLFWwindow *window) {
     if (isKeyPressed(window, GLFW_KEY_D)) {
         cameraPos -= cameraSpeed * glm::normalize(glm::cross(cameraUp, cameraFront));
     }
+}
+
+void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+    float xOffset = xpos - lastX, yOffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+    
+    float sensitivity = 0.05f;
+    yaw += xOffset * sensitivity;
+    pitch += yOffset * sensitivity;
+    pitch = min(max(pitch, -89.0f), 89.0f);
+    
+    cameraFront = glm::normalize(glm::vec3(
+                                           cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
+                                           sin(glm::radians(pitch)),
+                                           cos(glm::radians(pitch)) * sin(glm::radians(yaw))
+                                 ));
 }
 
 bool isKeyPressed(GLFWwindow *window, int key) {
