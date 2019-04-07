@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		FA0EFBFD225498B6003791B5 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0EFBFB225498B6003791B5 /* Shader.cpp */; };
+		FA1ECF272259C7FB00E4EFF8 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */; };
 		FA265D1F22520076000E9433 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA265D1E22520076000E9433 /* main.cpp */; };
 		FA265D272252013B000E9433 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D262252013B000E9433 /* OpenGL.framework */; };
 		FA265D2922520B0A000E9433 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D2822520B0A000E9433 /* libGLEW.2.1.0.dylib */; };
-		FA265D2B22520C90000E9433 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D2A22520C90000E9433 /* libglfw.3.2.dylib */; };
 		FA265D2D22521582000E9433 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = FA265D2C22521582000E9433 /* glad.c */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +33,7 @@
 		FA0EFBFE2254A20B003791B5 /* shader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.vs; sourceTree = "<group>"; };
 		FA0EFBFF2254A257003791B5 /* shader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.fs; sourceTree = "<group>"; };
 		FA16FB4F22559C1800010A03 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
+		FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		FA265D1B22520076000E9433 /* TestOpenGL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenGL; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA265D1E22520076000E9433 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FA265D262252013B000E9433 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -49,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA265D2B22520C90000E9433 /* libglfw.3.2.dylib in Frameworks */,
+				FA1ECF272259C7FB00E4EFF8 /* libglfw.3.3.dylib in Frameworks */,
 				FA265D2922520B0A000E9433 /* libGLEW.2.1.0.dylib in Frameworks */,
 				FA265D272252013B000E9433 /* OpenGL.framework in Frameworks */,
 			);
@@ -95,6 +96,7 @@
 		FA265D252252013B000E9433 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */,
 				FA265D2A22520C90000E9433 /* libglfw.3.2.dylib */,
 				FA265D2822520B0A000E9433 /* libGLEW.2.1.0.dylib */,
 				FA265D262252013B000E9433 /* OpenGL.framework */,
