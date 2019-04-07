@@ -33,8 +33,8 @@ float lastFrame = 0.0f; //上一帧的时间
 float deltaTime = 0.0f; //当前帧与上一帧时间差
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
+float yaw = -90.0f; //偏航角，为0时camera方向指向x轴正方向
 float pitch = 0.0f; //俯仰角
-float yaw = 0.0f; //偏航角
 
 bool isKeyPressed(GLFWwindow *window, int key);
 void processInput(GLFWwindow *window);
@@ -65,19 +65,21 @@ int main() {
     }
     //设置window的上下文为当前现场上下文
     glfwMakeContextCurrent(window);
+
+    
+    //设置窗口大小改变回调
+    glfwSetFramebufferSizeCallback(window, framebuffersizeCallback);
+    //光标位置回调
+    glfwSetCursorPosCallback(window, mouseCallback);
+    
+    //捕捉光标
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     //初始化GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         cout << "Failed to init GLAD" << endl;
         return -1;
     }
-    
-    //设置渲染窗口（视口）
-    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-    //设置窗口大小改变回调
-    glfwSetFramebufferSizeCallback(window, framebuffersizeCallback);
-    //捕捉光标
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     
     //创建链接着色器程序对象
@@ -303,6 +305,13 @@ void processInput(GLFWwindow *window) {
 }
 
 void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+    static bool firstMouse = true;
+    if (firstMouse) {
+        firstMouse = false;
+        lastX = xpos;
+        lastY = ypos;
+    }
+    
     float xOffset = xpos - lastX, yOffset = lastY - ypos;
     lastX = xpos;
     lastY = ypos;
@@ -312,11 +321,13 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     pitch += yOffset * sensitivity;
     pitch = min(max(pitch, -89.0f), 89.0f);
     
-    cameraFront = glm::normalize(glm::vec3(
-                                           cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
-                                           sin(glm::radians(pitch)),
-                                           cos(glm::radians(pitch)) * sin(glm::radians(yaw))
-                                 ));
+    cout << pitch << "\t" << yaw << endl;
+    
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
 }
 
 bool isKeyPressed(GLFWwindow *window, int key) {
