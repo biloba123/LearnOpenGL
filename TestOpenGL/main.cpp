@@ -206,7 +206,7 @@ int main() {
         lightingShader.setMat4("view", view);
         lightingShader.setMat4("projection", projection);
         lightingShader.setVec3("viewPos", camera.Position);
-        lightingShader.setVec3("lightPos", lightPos);
+        lightingShader.setVec3("lightPos", vec3(view * model * vec4(lightPos, 1.0f)));
         lightingShader.setFloat("strength", strength);
         glBindVertexArray(cuboVAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
