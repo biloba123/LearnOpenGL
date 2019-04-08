@@ -57,6 +57,10 @@ public:
         glUniform3f(glGetUniformLocation(ID, name), x, y, z);
     }
     
+    void setVec3(const char *name, glm::vec3 vec) {
+        glUniform3fv(glGetUniformLocation(ID, name), 1, glm::value_ptr(vec));
+    }
+    
 private:
     string readContent(const char *path) {
         string content;
