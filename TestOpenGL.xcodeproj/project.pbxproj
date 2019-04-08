@@ -31,8 +31,8 @@
 /* Begin PBXFileReference section */
 		FA0EFBFB225498B6003791B5 /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		FA0EFBFC225498B6003791B5 /* Shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Shader.hpp; sourceTree = "<group>"; };
-		FA0EFBFE2254A20B003791B5 /* shader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.vs; sourceTree = "<group>"; };
-		FA0EFBFF2254A257003791B5 /* shader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.fs; sourceTree = "<group>"; };
+		FA0EFBFE2254A20B003791B5 /* colors.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colors.vs; sourceTree = "<group>"; };
+		FA0EFBFF2254A257003791B5 /* colors.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colors.fs; sourceTree = "<group>"; };
 		FA129CED2259F37F00659B73 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		FA129CEE2259F37F00659B73 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		FA129CF42259F58100659B73 /* glad.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../../Projects_OpenGL/glad/src/glad.c; sourceTree = "<group>"; };
@@ -46,6 +46,8 @@
 		FA265D2A22520C90000E9433 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../usr/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		FA265D2C22521582000E9433 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../Projects_OpenGL/glad/src/glad.c; sourceTree = "<group>"; };
 		FA2ADC662255BA91004BEA61 /* awesomeface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = awesomeface.png; sourceTree = "<group>"; };
+		FA2E8DCD225B34F900DE9BB1 /* lamp.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.vs; sourceTree = "<group>"; };
+		FA2E8DCE225B352500DE9BB1 /* lamp.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.fs; sourceTree = "<group>"; };
 		FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,8 +70,10 @@
 			children = (
 				FA16FB4F22559C1800010A03 /* container.jpg */,
 				FA2ADC662255BA91004BEA61 /* awesomeface.png */,
-				FA0EFBFE2254A20B003791B5 /* shader.vs */,
-				FA0EFBFF2254A257003791B5 /* shader.fs */,
+				FA0EFBFE2254A20B003791B5 /* colors.vs */,
+				FA0EFBFF2254A257003791B5 /* colors.fs */,
+				FA2E8DCD225B34F900DE9BB1 /* lamp.vs */,
+				FA2E8DCE225B352500DE9BB1 /* lamp.fs */,
 			);
 			path = resource;
 			sourceTree = "<group>";
