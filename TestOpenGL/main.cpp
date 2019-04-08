@@ -25,7 +25,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const char *PROJECT_ROOT = "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpenGL";
 
-float mixValue = 0.2f;
+float strength = 0.5f;
 
 //Camera
 Camera camera(vec3(0.0f, 1.0f, 5.0f));
@@ -207,6 +207,7 @@ int main() {
         lightingShader.setMat4("projection", projection);
         lightingShader.setVec3("viewPos", camera.Position);
         lightingShader.setVec3("lightPos", lightPos);
+        lightingShader.setFloat("strength", strength);
         glBindVertexArray(cuboVAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         
@@ -243,18 +244,15 @@ void processInput(GLFWwindow *window) {
     }
     
     if (isKeyPressed(window, GLFW_KEY_UP)) {
-        mixValue += 0.001f;
-        if (mixValue > 1.0f) {
-            mixValue = 1.0f;
-        }
+        strength += 0.001f;
     }
     
     if (isKeyPressed(window, GLFW_KEY_DOWN)) {
-        mixValue -= 0.001f;
-        if (mixValue < 0.0f) {
-            mixValue = 0.0f;
-        }
+        strength -= 0.001f;
     }
+    
+    strength = std::min(1.0f, std::max(0.0f, strength));
+    
     
     if (isKeyPressed(window, GLFW_KEY_W)) {
         camera.processKeyboard(FORWARD, deltaTime);

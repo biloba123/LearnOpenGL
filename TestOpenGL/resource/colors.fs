@@ -8,6 +8,7 @@ uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
+uniform float strength;
 
 void main() {
     //环境光照
