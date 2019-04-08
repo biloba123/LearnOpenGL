@@ -73,7 +73,7 @@ public:
     glm::mat4 getViewMatrix()
     {
         //最后一个参数传Up或WorldUp一样
-        return calculate_lookAt_matrix(Position, Position + Front, WorldUp);
+        return glm::lookAt(Position, Position + Front, WorldUp);
     }
     
     // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
