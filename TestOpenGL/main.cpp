@@ -184,7 +184,6 @@ int main() {
     lightingShader.use();
     lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightingShader.setVec3("lightPos", lightPos);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -195,6 +194,9 @@ int main() {
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        lightPos.x = sin(currentFrame) + 1.2f;
+        lightPos.y = sin(currentFrame / 2) + 1.0f;
+        
         mat4 model = mat4(1.0f);
         mat4 view = camera.getViewMatrix();
         mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
@@ -204,6 +206,7 @@ int main() {
         lightingShader.setMat4("view", view);
         lightingShader.setMat4("projection", projection);
         lightingShader.setVec3("viewPos", camera.Position);
+        lightingShader.setVec3("lightPos", lightPos);
         glBindVertexArray(cuboVAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         
