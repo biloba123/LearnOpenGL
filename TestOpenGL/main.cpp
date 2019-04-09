@@ -43,6 +43,7 @@ void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
 void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 char *getAbsolutePath(const char *relativePath);
+GLuint loadTexture(const char *relativePath);
 
 int main() {
     //初始化GLFW
@@ -87,7 +88,7 @@ int main() {
     
     
     //创建链接着色器程序对象
-    char *vsPath = getAbsolutePath("/resource/colors.vs"), *fsPath = getAbsolutePath("/resource/colors.fs");
+    char *vsPath = getAbsolutePath("/resource/lighting_maps.vs"), *fsPath = getAbsolutePath("/resource/lighting_maps.fs");
     Shader lightingShader(vsPath, fsPath);
     free(vsPath);
     free(fsPath);
@@ -104,35 +105,36 @@ int main() {
     }
     
     GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        //positions        //normals        //texture coords
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
         
-        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
         
-        -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         
-        0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f, 1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f,
         
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
     };
     
     GLubyte elements[] = {
@@ -154,10 +156,12 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     //顶点属性配置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (void *)(sizeof(GLfloat) * 3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 3));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 6));
+    glEnableVertexAttribArray(2);
     
     //索引缓冲区对象
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
@@ -171,7 +175,7 @@ int main() {
     glBindVertexArray(lightVAO);
     
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)0);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
     
@@ -181,15 +185,20 @@ int main() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     
+    //f漫反射贴图
+    GLuint diffuseMap = loadTexture("/resource/container2.png");
+    GLuint specularMap = loadTexture("/resource/container2_specular.png");
+    
     lightingShader.use();
-    lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightingShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
-    lightingShader.setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f);
-    lightingShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
-    lightingShader.setFloat("material.shininess", 32.0f);
-    lightingShader.setFloat("material.shininess", 0.25f * 128);
-    lightingShader.setVec3("light.ambient", vec3(1.0f));
-    lightingShader.setVec3("light.diffuse", vec3(1.0f));
+    lightingShader.setInt("material.diffuse", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    lightingShader.setInt("material.specular", 1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
+    lightingShader.setFloat("material.shininess", 64.0f);
+    lightingShader.setVec3("light.ambient", vec3(0.2f));
+    lightingShader.setVec3("light.diffuse", vec3(0.5f));
     lightingShader.setVec3("light.specular", vec3(1.0f));
     lightingShader.setVec3("light.position", lightPos);
     //渲染循环
@@ -311,4 +320,37 @@ char *getAbsolutePath(const char *relativePath) {
     strcat(absolutePath, relativePath);
     
     return absolutePath;
+}
+
+GLuint loadTexture(const char *relativePath) {
+    GLuint textureID;
+    char *path = getAbsolutePath(relativePath);
+    glGenTextures(1, &textureID);
+    
+    int width = 0, height = 0, comp = 0;
+    unsigned char *data = stbi_load(path, &width, &height, &comp, 0);
+    if (data) {
+        GLenum format;
+        switch (comp) {
+            case 1: format = GL_RED;    break;
+            case 3: format = GL_RGB;    break;
+            case 4: format = GL_RGBA;   break;
+            default: break;
+        }
+        
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    } else {
+        cout << "Texture failed to load at path: " << path << endl;
+    }
+    
+    stbi_image_free(data);
+    free(path);
+    return textureID;
 }
