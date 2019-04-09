@@ -183,14 +183,14 @@ int main() {
     
     lightingShader.use();
     lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightingShader.setVec3("lightPos", lightPos);
-    lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-    lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    lightingShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
+    lightingShader.setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f);
+    lightingShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
     lightingShader.setFloat("material.shininess", 32.0f);
-    lightingShader.setVec3("light.ambient", 0.2f, 0.3f, 0.2f);
-    lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    lightingShader.setFloat("material.shininess", 0.25f * 128);
+    lightingShader.setVec3("light.ambient", vec3(1.0f));
+    lightingShader.setVec3("light.diffuse", vec3(1.0f));
+    lightingShader.setVec3("light.specular", vec3(1.0f));
     lightingShader.setVec3("light.position", lightPos);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
