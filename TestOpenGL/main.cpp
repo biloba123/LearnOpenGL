@@ -187,7 +187,7 @@ int main() {
     
     //f漫反射贴图
     GLuint diffuseMap = loadTexture("/resource/container2.png");
-    GLuint specularMap = loadTexture("/resource/container2_specular.png");
+    GLuint specularMap = loadTexture("/resource/lighting_maps_specular_color.png");
     
     lightingShader.use();
     lightingShader.setInt("material.diffuse", 0);

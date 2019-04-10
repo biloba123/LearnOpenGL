@@ -40,6 +40,7 @@
 		FA13A6E0225CD3EF00703F5A /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../../.Trash/glad.c; sourceTree = "<group>"; };
 		FA13A6E2225CE46300703F5A /* container2_specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container2_specular.png; sourceTree = "<group>"; };
 		FA16FB4F22559C1800010A03 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
+		FA1956C7225DA5C3008A49F0 /* lighting_maps_specular_color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lighting_maps_specular_color.png; sourceTree = "<group>"; };
 		FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		FA265D1B22520076000E9433 /* TestOpenGL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenGL; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA265D1E22520076000E9433 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -73,6 +74,7 @@
 				FA13A6DF225CD33500703F5A /* container2.png */,
 				FA2ADC662255BA91004BEA61 /* awesomeface.png */,
 				FA0EFBFE2254A20B003791B5 /* lighting_maps.vs */,
+				FA1956C7225DA5C3008A49F0 /* lighting_maps_specular_color.png */,
 				FA0EFBFF2254A257003791B5 /* lighting_maps.fs */,
 				FA2E8DCD225B34F900DE9BB1 /* lamp.vs */,
 				FA13A6E2225CE46300703F5A /* container2_specular.png */,
