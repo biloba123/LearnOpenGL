@@ -185,9 +185,12 @@ int main() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     
-    //f漫反射贴图
+    //漫反射贴图
     GLuint diffuseMap = loadTexture("/resource/container2.png");
+    //镜面光贴图
     GLuint specularMap = loadTexture("/resource/lighting_maps_specular_color.png");
+    //放射光贴图
+    GLuint emissionMap = loadTexture("/resource/matrix.jpg");
     
     lightingShader.use();
     lightingShader.setInt("material.diffuse", 0);
@@ -196,6 +199,9 @@ int main() {
     lightingShader.setInt("material.specular", 1);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, specularMap);
+    lightingShader.setInt("material.emission", 2);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, emissionMap);
     lightingShader.setFloat("material.shininess", 64.0f);
     lightingShader.setVec3("light.ambient", vec3(0.2f));
     lightingShader.setVec3("light.diffuse", vec3(0.5f));
