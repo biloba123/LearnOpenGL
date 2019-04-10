@@ -31,8 +31,8 @@
 /* Begin PBXFileReference section */
 		FA0EFBFB225498B6003791B5 /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		FA0EFBFC225498B6003791B5 /* Shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Shader.hpp; sourceTree = "<group>"; };
-		FA0EFBFE2254A20B003791B5 /* lighting_maps.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lighting_maps.vs; sourceTree = "<group>"; };
-		FA0EFBFF2254A257003791B5 /* lighting_maps.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lighting_maps.fs; sourceTree = "<group>"; };
+		FA0EFBFE2254A20B003791B5 /* multiple_lights.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multiple_lights.vs; sourceTree = "<group>"; };
+		FA0EFBFF2254A257003791B5 /* multiple_lights.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multiple_lights.fs; sourceTree = "<group>"; };
 		FA129CED2259F37F00659B73 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		FA129CEE2259F37F00659B73 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		FA129CF62259F58800659B73 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
@@ -72,8 +72,8 @@
 				FA16FB4F22559C1800010A03 /* container.jpg */,
 				FA13A6DF225CD33500703F5A /* container2.png */,
 				FA2ADC662255BA91004BEA61 /* awesomeface.png */,
-				FA0EFBFE2254A20B003791B5 /* lighting_maps.vs */,
-				FA0EFBFF2254A257003791B5 /* lighting_maps.fs */,
+				FA0EFBFE2254A20B003791B5 /* multiple_lights.vs */,
+				FA0EFBFF2254A257003791B5 /* multiple_lights.fs */,
 				FA2E8DCD225B34F900DE9BB1 /* lamp.vs */,
 				FA13A6E2225CE46300703F5A /* container2_specular.png */,
 				FA2E8DCE225B352500DE9BB1 /* lamp.fs */,

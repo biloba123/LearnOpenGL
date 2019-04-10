@@ -34,9 +34,6 @@ float deltaTime = 0.0f; //当前帧与上一帧时间差
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 
-// lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
 bool isKeyPressed(GLFWwindow *window, int key);
 void processInput(GLFWwindow *window);
 void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
@@ -44,6 +41,8 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 char *getAbsolutePath(const char *relativePath);
 GLuint loadTexture(const char *relativePath);
+
+#define NR_POINT_LIGHTS 4
 
 int main() {
     //初始化GLFW
@@ -88,7 +87,7 @@ int main() {
     
     
     //创建链接着色器程序对象
-    char *vsPath = getAbsolutePath("/resource/lighting_maps.vs"), *fsPath = getAbsolutePath("/resource/lighting_maps.fs");
+    char *vsPath = getAbsolutePath("/resource/multiple_lights.vs"), *fsPath = getAbsolutePath("/resource/multiple_lights.fs");
     Shader lightingShader(vsPath, fsPath);
     free(vsPath);
     free(fsPath);
@@ -159,6 +158,13 @@ int main() {
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
+    glm::vec3 pointLightPositions[NR_POINT_LIGHTS] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+    
     
     GLuint cuboVAO, buffers[2];
     glGenVertexArrays(1, &cuboVAO);
@@ -203,19 +209,49 @@ int main() {
     GLuint specularMap = loadTexture("/resource/container2_specular.png");
     
     lightingShader.use();
+    //漫反射贴图
     lightingShader.setInt("material.diffuse", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    //镜面光贴图
     lightingShader.setInt("material.specular", 1);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, specularMap);
     lightingShader.setFloat("material.shininess", 64.0f);
-    lightingShader.setVec3("light.ambient", vec3(0.2f));
-    lightingShader.setVec3("light.diffuse", vec3(0.6f));
-    lightingShader.setVec3("light.specular", vec3(1.0f));
-    lightingShader.setFloat("light.constant", 1.0f);
-    lightingShader.setFloat("light.linear", 0.09f);
-    lightingShader.setFloat("light.quadratic", 0.032f);
+    //定向光
+    lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    lightingShader.setVec3("dirLight.ambient", vec3(0.05f));
+    lightingShader.setVec3("dirLight.diffuse", vec3(0.4f));
+    lightingShader.setVec3("dirLight.specular", vec3(0.5f));
+    //点光源
+    vec3 pointLightAttrs[NR_POINT_LIGHTS * 5] = {
+        //(constant, linear, quadratic) //ambient         //diffuse             //specular
+        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
+        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
+        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
+        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
+        
+    };
+    for (unsigned int i = 0; i < NR_POINT_LIGHTS; i++) {
+        string pointLight = "pointLights[" + to_string(i) + "].";
+        lightingShader.setVec3((pointLight + "position").c_str(), pointLightPositions[i]);
+        vec3 attenuation = pointLightAttrs[i * 4];
+        lightingShader.setFloat((pointLight + "constant").c_str(), attenuation.x);
+        lightingShader.setFloat((pointLight + "linear").c_str(), attenuation.y);
+        lightingShader.setFloat((pointLight + "quadratic").c_str(), attenuation.z);
+        lightingShader.setVec3((pointLight + "ambient").c_str(), pointLightAttrs[i * 4 + 1]);
+        lightingShader.setVec3((pointLight + "diffuse").c_str(), pointLightAttrs[i * 4 + 2]);
+        lightingShader.setVec3((pointLight + "specular").c_str(), pointLightAttrs[i * 4 + 3]);
+    }
+    //聚光灯
+    lightingShader.setVec3("spotLight.ambient", vec3(0.0f));
+    lightingShader.setVec3("spotLight.diffuse", vec3(1.0f));
+    lightingShader.setVec3("spotLight.specular", vec3(1.0f));
+    lightingShader.setFloat("spotLight.constant", 1.0f);
+    lightingShader.setFloat("spotLight.linear", 0.09f);
+    lightingShader.setFloat("spotLight.quadratic", 0.032f);
+    lightingShader.setFloat("spotLight.cutOff", cos(radians(12.5f)));
+    lightingShader.setFloat("spotLight.outerCutOff", cos(radians(15.0f)));
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -233,10 +269,8 @@ int main() {
         lightingShader.setMat4("view", view);
         lightingShader.setMat4("projection", projection);
         lightingShader.setVec3("viewPos", camera.Position);
-        lightingShader.setVec3("light.position", camera.Position);
-        lightingShader.setVec3("light.direction", camera.Front);
-        lightingShader.setFloat("light.cutOff", cos(radians(12.5f)));
-        lightingShader.setFloat("light.outerCutOff", cos(radians(17.5f)));
+        lightingShader.setVec3("spotLight.position", camera.Position);
+        lightingShader.setVec3("spotLight.direction", camera.Front);
         glBindVertexArray(cuboVAO);
         for (unsigned int i = 0; i < 10; i++) {
             glm::mat4 model = mat4(1.0f);
@@ -248,16 +282,17 @@ int main() {
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         }
         
-        mat4 model = mat4(1.0f);
-        model = translate(model, lightPos);
-        model = scale(model, glm::vec3(0.2f));
-        
         lampShader.use();
-        lampShader.setMat4("model", model);
         lampShader.setMat4("view", view);
         lampShader.setMat4("projection", projection);
         glBindVertexArray(lightVAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
+        for (unsigned int i = 0; i < NR_POINT_LIGHTS; i++) {
+            mat4 model = mat4(1.0f);
+            model = translate(model, pointLightPositions[i]);
+            model = scale(model, vec3(0.2f));
+            lampShader.setMat4("model", model);
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
+        }
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);
