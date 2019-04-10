@@ -146,6 +146,19 @@ int main() {
         20, 21, 22, 22, 23, 20,
     };
     
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+    
     
     GLuint cuboVAO, buffers[2];
     glGenVertexArrays(1, &cuboVAO);
@@ -198,9 +211,10 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, specularMap);
     lightingShader.setFloat("material.shininess", 64.0f);
     lightingShader.setVec3("light.ambient", vec3(0.2f));
-    lightingShader.setVec3("light.diffuse", vec3(0.5f));
+    lightingShader.setVec3("light.diffuse", vec3(0.6f));
     lightingShader.setVec3("light.specular", vec3(1.0f));
-    lightingShader.setVec3("light.position", lightPos);
+//    lightingShader.setVec3("light.position", lightPos);
+    lightingShader.setVec3("light.direction", vec3(-0.2f, -1.0f, -0.3f));
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -211,19 +225,25 @@ int main() {
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        mat4 model = mat4(1.0f);
         mat4 view = camera.getViewMatrix();
         mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
         lightingShader.use();
-        lightingShader.setMat4("model", model);
         lightingShader.setMat4("view", view);
         lightingShader.setMat4("projection", projection);
         lightingShader.setVec3("viewPos", camera.Position);
         glBindVertexArray(cuboVAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
+        for (unsigned int i = 0; i < 10; i++) {
+            glm::mat4 model = mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            lightingShader.setMat4("model", model);
+            
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
+        }
         
-        model = mat4(1.0f);
+        mat4 model = mat4(1.0f);
         model = translate(model, lightPos);
         model = scale(model, glm::vec3(0.2f));
         

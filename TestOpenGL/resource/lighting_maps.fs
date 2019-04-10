@@ -16,7 +16,8 @@ struct Light {
     vec3 diffuse;
     vec3 specular;
     
-    vec3 position;
+    //vec3 position;
+    vec3 direction;
 };
 
 uniform Material material;
@@ -29,7 +30,7 @@ void main() {
     vec3 ambient = textColor * light.ambient;
     //漫反射光照
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
+    vec3 lightDir = normalize(-light.direction);
     float diff = max(0.0, dot(norm, lightDir));
     vec3 diffuse = textColor * diff * light.diffuse;
     //镜面光照
