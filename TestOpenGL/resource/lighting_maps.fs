@@ -17,6 +17,9 @@ struct Light {
     vec3 specular;
     
     vec3 position;
+    vec3 direction;
+    float cutOff;
+    float outerCutOff;
     
     float constant;
     float linear;
@@ -33,19 +36,32 @@ void main() {
     
     
     vec3 textColor = vec3(texture(material.diffuse, TexCoords));
-    //环境光照
-    vec3 ambient = textColor * light.ambient * attenuation;
-    //漫反射光照
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
-    float diff = max(0.0, dot(norm, lightDir));
-    vec3 diffuse = textColor * diff * light.diffuse * attenuation;
-    //镜面光照
-    vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(0.0, dot(viewDir, reflectDir)), material.shininess);
-    vec3 specular = vec3(texture(material.specular, TexCoords)) * spec * light.specular * attenuation;
     
-    vec3 result = ambient + diffuse + specular;
-    FragColor = vec4(result, 1.0);
+    vec3 lightDir = normalize(light.position - FragPos);
+    float theta = dot(lightDir, normalize(-light.direction));
+    
+    if (theta > light.outerCutOff) {
+        float epsilon = light.cutOff - light.outerCutOff;
+        float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+        
+        //环境光照
+        vec3 ambient = textColor * light.ambient;
+        //漫反射光照
+        vec3 norm = normalize(Normal);
+        float diff = max(0.0, dot(norm, lightDir));
+        vec3 diffuse = textColor * diff * light.diffuse;
+        //镜面光照
+        vec3 viewDir = normalize(viewPos - FragPos);
+        vec3 reflectDir = reflect(-lightDir, norm);
+        float spec = pow(max(0.0, dot(viewDir, reflectDir)), material.shininess);
+        vec3 specular = vec3(texture(material.specular, TexCoords)) * spec * light.specular;
+        
+//        ambient *= attenuation;
+        diffuse = diffuse * attenuation * intensity;
+        specular = specular * attenuation * intensity;
+        vec3 result = ambient + diffuse + specular;
+        FragColor = vec4(result, 1.0);
+    } else {
+        FragColor = vec4(textColor * light.ambient, 1.0);
+    }
 }
