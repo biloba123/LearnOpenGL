@@ -165,6 +165,13 @@ int main() {
         glm::vec3( 0.0f,  0.0f, -3.0f)
     };
     
+    glm::vec3 pointLightColors[NR_POINT_LIGHTS] = {
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        glm::vec3(0.3f, 0.1f, 0.1f)
+    };
+    
     
     GLuint cuboVAO, buffers[2];
     glGenVertexArrays(1, &cuboVAO);
@@ -204,7 +211,7 @@ int main() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     
-    //f漫反射贴图
+    //漫反射贴图
     GLuint diffuseMap = loadTexture("/resource/container2.png");
     GLuint specularMap = loadTexture("/resource/container2_specular.png");
     
@@ -220,16 +227,16 @@ int main() {
     lightingShader.setFloat("material.shininess", 64.0f);
     //定向光
     lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-    lightingShader.setVec3("dirLight.ambient", vec3(0.05f));
-    lightingShader.setVec3("dirLight.diffuse", vec3(0.4f));
-    lightingShader.setVec3("dirLight.specular", vec3(0.5f));
+    lightingShader.setVec3("dirLight.ambient", vec3(0.0f));
+    lightingShader.setVec3("dirLight.diffuse", vec3(0.05f));
+    lightingShader.setVec3("dirLight.specular", vec3(0.2f));
     //点光源
     vec3 pointLightAttrs[NR_POINT_LIGHTS * 5] = {
         //(constant, linear, quadratic) //ambient         //diffuse             //specular
-        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
-        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
-        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
-        vec3(1.0f, 0.09f, 0.032f), vec3(0.05f, 0.05f, 0.05f), vec3(0.8f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f),
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[0] * 0.1f, pointLightColors[0], pointLightColors[0],
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[1] * 0.1f, pointLightColors[1], pointLightColors[1],
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[2] * 0.1f, pointLightColors[2], pointLightColors[2],
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[3] * 0.1f, pointLightColors[3], pointLightColors[3],
         
     };
     for (unsigned int i = 0; i < NR_POINT_LIGHTS; i++) {
@@ -250,7 +257,7 @@ int main() {
     lightingShader.setFloat("spotLight.constant", 1.0f);
     lightingShader.setFloat("spotLight.linear", 0.09f);
     lightingShader.setFloat("spotLight.quadratic", 0.032f);
-    lightingShader.setFloat("spotLight.cutOff", cos(radians(12.5f)));
+    lightingShader.setFloat("spotLight.cutOff", cos(radians(10.0f)));
     lightingShader.setFloat("spotLight.outerCutOff", cos(radians(15.0f)));
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
@@ -291,6 +298,7 @@ int main() {
             model = translate(model, pointLightPositions[i]);
             model = scale(model, vec3(0.2f));
             lampShader.setMat4("model", model);
+            lampShader.setVec3("color", pointLightColors[i]);
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         }
         
