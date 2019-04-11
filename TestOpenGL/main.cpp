@@ -19,6 +19,7 @@
 #include "Camera.hpp"
 #include "stb_image_wrapper.h"
 using namespace std;
+using namespace glm;
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -27,7 +28,7 @@ const char *PROJECT_ROOT = "/Users/lvqingyang/Projects_Xcode/TestOpenGL/TestOpen
 float mixValue = 0.2f;
 
 //Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(vec3(0.0f, 1.0f, 4.0f));
 float lastFrame = 0.0f; //上一帧的时间
 float deltaTime = 0.0f; //当前帧与上一帧时间差
 float lastX = SCR_WIDTH / 2;
@@ -39,6 +40,9 @@ void framebuffersizeCallback(GLFWwindow *window, GLint width, GLint height);
 void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 char *getAbsolutePath(const char *relativePath);
+GLuint loadTexture(const char *relativePath);
+
+#define NR_POINT_LIGHTS 4
 
 int main() {
     //初始化GLFW
@@ -83,46 +87,53 @@ int main() {
     
     
     //创建链接着色器程序对象
-    char *vsPath = getAbsolutePath("/resource/shader.vs"), *fsPath = getAbsolutePath("/resource/shader.fs");
-    Shader shaderProgram(vsPath, fsPath);
+    char *vsPath = getAbsolutePath("/resource/multiple_lights.vs"), *fsPath = getAbsolutePath("/resource/multiple_lights.fs");
+    Shader lightingShader(vsPath, fsPath);
+    free(vsPath);
+    free(fsPath);
+    
+    vsPath = getAbsolutePath("/resource/lamp.vs");
+    fsPath = getAbsolutePath("/resource/lamp.fs");
+    Shader lampShader(vsPath, fsPath);
     free(vsPath);
     free(fsPath);
     
     
-    if (!shaderProgram.ID) {
+    if (!lightingShader.ID || !lampShader.ID) {
         return -1;
     }
     
     GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,//0, 1, 2, 2, 3, 0
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        //positions        //normals        //texture coords
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
         
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,//4, 5, 6, 6, 7, 4
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
         
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,//8, 9, 10, 10, 11, 8
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f, 1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f,
         
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
     };
     
     GLubyte elements[] = {
@@ -147,67 +158,107 @@ int main() {
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
-    GLuint vao, buffers[2];
-    glGenVertexArrays(1, &vao);
+    glm::vec3 pointLightPositions[NR_POINT_LIGHTS] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+    
+    glm::vec3 pointLightColors[NR_POINT_LIGHTS] = {
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        glm::vec3(0.3f, 0.1f, 0.1f)
+    };
+    
+    
+    GLuint cuboVAO, buffers[2];
+    glGenVertexArrays(1, &cuboVAO);
     glGenBuffers(2, buffers);
-    
-    glBindVertexArray(vao);
-    
+    glBindVertexArray(cuboVAO);
+
     //顶点缓冲区对象
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     //顶点属性配置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (void *)(sizeof(GLfloat) * 3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 3));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)(sizeof(GLfloat) * 6));
+    glEnableVertexAttribArray(2);
     
     //索引缓冲区对象
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
     
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     
-    //生成纹理
-    GLuint textures[2];
-    const char *imgPaths[] = {"/resource/container.jpg", "/resource/awesomeface.png"};
-    GLenum imgTypes[] = {GL_RGB, GL_RGBA};
-    glGenTextures(2, textures);
-    stbi_set_flip_vertically_on_load(true);
-    for (int i = 0; i < 2; i++) {
-        glBindTexture(GL_TEXTURE_2D, textures[i]);
-        //设置纹理对象参数
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //加载并设置纹理图像
-        char *absoluteImgPath = getAbsolutePath(imgPaths[i]);
-        GLint width, height, comp;
-        unsigned char *data = stbi_load(absoluteImgPath, &width, &height, &comp, 0);
-        if (data) {
-            glTexImage2D(GL_TEXTURE_2D, 0, imgTypes[i], width, height, 0, imgTypes[i], GL_UNSIGNED_BYTE, data);
-            //多级渐进纹理
-            glGenerateMipmap(GL_TEXTURE_2D);
-        } else {
-            cout << "Failed to load texture" << endl;
-        }
-        stbi_image_free(data);
-        free(absoluteImgPath);
-    }
     
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    GLuint lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
     
-    shaderProgram.use();
-    //纹理单元
-    shaderProgram.setInt("ourTexture1", 0);
-    shaderProgram.setInt("ourTexture2", 1);
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
     
-    //线框模式
-    //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBindVertexArray(0);
+   
+    
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     
+    //漫反射贴图
+    GLuint diffuseMap = loadTexture("/resource/container2.png");
+    GLuint specularMap = loadTexture("/resource/container2_specular.png");
+    
+    lightingShader.use();
+    //漫反射贴图
+    lightingShader.setInt("material.diffuse", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    //镜面光贴图
+    lightingShader.setInt("material.specular", 1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
+    lightingShader.setFloat("material.shininess", 64.0f);
+    //定向光
+    lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    lightingShader.setVec3("dirLight.ambient", vec3(0.0f));
+    lightingShader.setVec3("dirLight.diffuse", vec3(0.05f));
+    lightingShader.setVec3("dirLight.specular", vec3(0.2f));
+    //点光源
+    vec3 pointLightAttrs[NR_POINT_LIGHTS * 5] = {
+        //(constant, linear, quadratic) //ambient         //diffuse             //specular
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[0] * 0.1f, pointLightColors[0], pointLightColors[0],
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[1] * 0.1f, pointLightColors[1], pointLightColors[1],
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[2] * 0.1f, pointLightColors[2], pointLightColors[2],
+        vec3(1.0f, 0.09f, 0.032f),  pointLightColors[3] * 0.1f, pointLightColors[3], pointLightColors[3],
+        
+    };
+    for (unsigned int i = 0; i < NR_POINT_LIGHTS; i++) {
+        string pointLight = "pointLights[" + to_string(i) + "].";
+        lightingShader.setVec3((pointLight + "position").c_str(), pointLightPositions[i]);
+        vec3 attenuation = pointLightAttrs[i * 4];
+        lightingShader.setFloat((pointLight + "constant").c_str(), attenuation.x);
+        lightingShader.setFloat((pointLight + "linear").c_str(), attenuation.y);
+        lightingShader.setFloat((pointLight + "quadratic").c_str(), attenuation.z);
+        lightingShader.setVec3((pointLight + "ambient").c_str(), pointLightAttrs[i * 4 + 1]);
+        lightingShader.setVec3((pointLight + "diffuse").c_str(), pointLightAttrs[i * 4 + 2]);
+        lightingShader.setVec3((pointLight + "specular").c_str(), pointLightAttrs[i * 4 + 3]);
+    }
+    //聚光灯
+    lightingShader.setVec3("spotLight.ambient", vec3(0.0f));
+    lightingShader.setVec3("spotLight.diffuse", vec3(1.0f));
+    lightingShader.setVec3("spotLight.specular", vec3(1.0f));
+    lightingShader.setFloat("spotLight.constant", 1.0f);
+    lightingShader.setFloat("spotLight.linear", 0.09f);
+    lightingShader.setFloat("spotLight.quadratic", 0.032f);
+    lightingShader.setFloat("spotLight.cutOff", cos(radians(10.0f)));
+    lightingShader.setFloat("spotLight.outerCutOff", cos(radians(15.0f)));
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -218,29 +269,36 @@ int main() {
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        //构造变化矩阵
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-        view = camera.getViewMatrix();
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        mat4 view = camera.getViewMatrix();
+        mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
-        
-        shaderProgram.use();
-        glBindVertexArray(vao);
-        for (int i = 0; i < 2; i++) {
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, textures[i]);
-        }
-        shaderProgram.setMat4("view", view);
-        shaderProgram.setMat4("projection", projection);
-        shaderProgram.setFloat("mixValue", mixValue);
-        
-        for (int i = 0; i < 10; i++) {
-            glm::mat4 model = glm::mat4(1.0f);
+        lightingShader.use();
+        lightingShader.setMat4("view", view);
+        lightingShader.setMat4("projection", projection);
+        lightingShader.setVec3("viewPos", camera.Position);
+        lightingShader.setVec3("spotLight.position", camera.Position);
+        lightingShader.setVec3("spotLight.direction", camera.Front);
+        glBindVertexArray(cuboVAO);
+        for (unsigned int i = 0; i < 10; i++) {
+            glm::mat4 model = mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
-            shaderProgram.setMat4("model", model);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            lightingShader.setMat4("model", model);
             
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
+        }
+        
+        lampShader.use();
+        lampShader.setMat4("view", view);
+        lampShader.setMat4("projection", projection);
+        glBindVertexArray(lightVAO);
+        for (unsigned int i = 0; i < NR_POINT_LIGHTS; i++) {
+            mat4 model = mat4(1.0f);
+            model = translate(model, pointLightPositions[i]);
+            model = scale(model, vec3(0.2f));
+            lampShader.setMat4("model", model);
+            lampShader.setVec3("color", pointLightColors[i]);
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         }
         
@@ -250,7 +308,8 @@ int main() {
         glfwPollEvents();
     }
     
-    glDeleteVertexArrays(1, &vao);
+    glDeleteVertexArrays(1, &cuboVAO);
+    glDeleteVertexArrays(1, &lightVAO);
     glDeleteBuffers(2, buffers);
     
     //释放资源
@@ -329,4 +388,37 @@ char *getAbsolutePath(const char *relativePath) {
     strcat(absolutePath, relativePath);
     
     return absolutePath;
+}
+
+GLuint loadTexture(const char *relativePath) {
+    GLuint textureID;
+    char *path = getAbsolutePath(relativePath);
+    glGenTextures(1, &textureID);
+    
+    int width = 0, height = 0, comp = 0;
+    unsigned char *data = stbi_load(path, &width, &height, &comp, 0);
+    if (data) {
+        GLenum format;
+        switch (comp) {
+            case 1: format = GL_RED;    break;
+            case 3: format = GL_RGB;    break;
+            case 4: format = GL_RGBA;   break;
+            default: break;
+        }
+        
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    } else {
+        cout << "Texture failed to load at path: " << path << endl;
+    }
+    
+    stbi_image_free(data);
+    free(path);
+    return textureID;
 }

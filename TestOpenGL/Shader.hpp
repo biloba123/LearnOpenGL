@@ -53,6 +53,14 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(mat));
     }
     
+    void setVec3(const char *name, GLfloat x, GLfloat y, GLfloat z) {
+        glUniform3f(glGetUniformLocation(ID, name), x, y, z);
+    }
+    
+    void setVec3(const char *name, glm::vec3 vec) {
+        glUniform3fv(glGetUniformLocation(ID, name), 1, glm::value_ptr(vec));
+    }
+    
 private:
     string readContent(const char *path) {
         string content;
