@@ -98,8 +98,14 @@ int main() {
     free(vsPath);
     free(fsPath);
     
+    vsPath = getAbsolutePath("/resource/multiple_lights.vs");
+    fsPath = getAbsolutePath("/resource/single_color.fs");
+    Shader singleColorShader(vsPath, fsPath);
+    free(vsPath);
+    free(fsPath);
     
-    if (!lightingShader.ID || !lampShader.ID) {
+    
+    if (!lightingShader.ID || !lampShader.ID || !singleColorShader.ID) {
         return -1;
     }
     
@@ -257,8 +263,12 @@ int main() {
     lightingShader.setFloat("spotLight.outerCutOff", cos(radians(15.0f)));
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    //深度测试
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    //模版测试
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -267,11 +277,13 @@ int main() {
         
         processInput(window);
         
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         
         mat4 view = camera.getViewMatrix();
         mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
         lightingShader.use();
         lightingShader.setMat4("view", view);
         lightingShader.setMat4("projection", projection);
@@ -289,6 +301,27 @@ int main() {
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         }
         
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        singleColorShader.use();
+        singleColorShader.setMat4("view", view);
+        singleColorShader.setMat4("projection", projection);
+        singleColorShader.setVec3("viewPos", camera.Position);
+        singleColorShader.setVec3("spotLight.position", camera.Position);
+        singleColorShader.setVec3("spotLight.direction", camera.Front);
+        glBindVertexArray(cuboVAO);
+        for (unsigned int i = 0; i < 10; i++) {
+            glm::mat4 model = mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = scale(model, vec3(1.05f));
+            singleColorShader.setMat4("model", model);
+            
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
+        }
+        
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
         lampShader.use();
         lampShader.setMat4("view", view);
         lampShader.setMat4("projection", projection);
@@ -301,6 +334,8 @@ int main() {
             lampShader.setVec3("color", pointLightColors[i]);
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void *)0);
         }
+        //Don't froget!!!
+        glStencilMask(0xFF);
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);
