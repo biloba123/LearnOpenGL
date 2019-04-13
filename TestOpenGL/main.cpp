@@ -206,10 +206,6 @@ int main() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
     
     glBindVertexArray(0);
-   
-    
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
     
     //漫反射贴图
     GLuint diffuseMap = loadTexture("/resource/container2.png");
@@ -227,9 +223,9 @@ int main() {
     lightingShader.setFloat("material.shininess", 64.0f);
     //定向光
     lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-    lightingShader.setVec3("dirLight.ambient", vec3(0.0f));
-    lightingShader.setVec3("dirLight.diffuse", vec3(0.05f));
-    lightingShader.setVec3("dirLight.specular", vec3(0.2f));
+    lightingShader.setVec3("dirLight.ambient", vec3(0.1f));
+    lightingShader.setVec3("dirLight.diffuse", vec3(0.2f));
+    lightingShader.setVec3("dirLight.specular", vec3(0.5f));
     //点光源
     vec3 pointLightAttrs[NR_POINT_LIGHTS * 5] = {
         //(constant, linear, quadratic) //ambient         //diffuse             //specular
@@ -259,6 +255,10 @@ int main() {
     lightingShader.setFloat("spotLight.quadratic", 0.032f);
     lightingShader.setFloat("spotLight.cutOff", cos(radians(10.0f)));
     lightingShader.setFloat("spotLight.outerCutOff", cos(radians(15.0f)));
+    
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
