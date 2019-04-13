@@ -14,6 +14,9 @@
 		FA265D1F22520076000E9433 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA265D1E22520076000E9433 /* main.cpp */; };
 		FA265D272252013B000E9433 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D262252013B000E9433 /* OpenGL.framework */; };
 		FA265D2922520B0A000E9433 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA265D2822520B0A000E9433 /* libGLEW.2.1.0.dylib */; };
+		FA358187225F219300C9D2A8 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA358185225F219300C9D2A8 /* Mesh.cpp */; };
+		FA35818A225F342700C9D2A8 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA358188225F342700C9D2A8 /* Model.cpp */; };
+		FA35818C225F363000C9D2A8 /* libassimp.4.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA35818B225F363000C9D2A8 /* libassimp.4.0.1.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,7 +38,9 @@
 		FA0EFBFF2254A257003791B5 /* multiple_lights.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multiple_lights.fs; sourceTree = "<group>"; };
 		FA129CED2259F37F00659B73 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		FA129CEE2259F37F00659B73 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
-		FA129CF62259F58800659B73 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
+		FA12EF1C2260D8E100EA8274 /* model_loading.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = model_loading.vs; sourceTree = "<group>"; };
+		FA12EF1D2260D90900EA8274 /* model_loading.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = model_loading.fs; sourceTree = "<group>"; };
+		FA12EF1E2260DC3F00EA8274 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		FA13A6DF225CD33500703F5A /* container2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container2.png; sourceTree = "<group>"; };
 		FA13A6E2225CE46300703F5A /* container2_specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container2_specular.png; sourceTree = "<group>"; };
 		FA16FB4F22559C1800010A03 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
@@ -49,7 +54,13 @@
 		FA2ADC662255BA91004BEA61 /* awesomeface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = awesomeface.png; sourceTree = "<group>"; };
 		FA2E8DCD225B34F900DE9BB1 /* lamp.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.vs; sourceTree = "<group>"; };
 		FA2E8DCE225B352500DE9BB1 /* lamp.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.fs; sourceTree = "<group>"; };
-		FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
+		FA33BFF9225F745900B60463 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../../.Trash/stb_image.h; sourceTree = "<group>"; };
+		FA33BFFA225F74E700B60463 /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stb_image_wrapper.h; path = ../../../../.Trash/stb_image_wrapper.h; sourceTree = "<group>"; };
+		FA358185225F219300C9D2A8 /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
+		FA358186225F219300C9D2A8 /* Mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mesh.hpp; sourceTree = "<group>"; };
+		FA358188225F342700C9D2A8 /* Model.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
+		FA358189225F342700C9D2A8 /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
+		FA35818B225F363000C9D2A8 /* libassimp.4.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.0.1.dylib; path = ../../../../usr/local/lib/libassimp.4.0.1.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA35818C225F363000C9D2A8 /* libassimp.4.0.1.dylib in Frameworks */,
 				FA1ECF272259C7FB00E4EFF8 /* libglfw.3.3.dylib in Frameworks */,
 				FA265D2922520B0A000E9433 /* libGLEW.2.1.0.dylib in Frameworks */,
 				FA265D272252013B000E9433 /* OpenGL.framework in Frameworks */,
@@ -77,6 +89,8 @@
 				FA2E8DCD225B34F900DE9BB1 /* lamp.vs */,
 				FA13A6E2225CE46300703F5A /* container2_specular.png */,
 				FA2E8DCE225B352500DE9BB1 /* lamp.fs */,
+				FA12EF1C2260D8E100EA8274 /* model_loading.vs */,
+				FA12EF1D2260D90900EA8274 /* model_loading.fs */,
 			);
 			path = resource;
 			sourceTree = "<group>";
@@ -84,9 +98,9 @@
 		FA129CF12259F53D00659B73 /* thirdLib */ = {
 			isa = PBXGroup;
 			children = (
-				FA129CF62259F58800659B73 /* stb_image.h */,
+				FA33BFFA225F74E700B60463 /* stb_image_wrapper.h */,
+				FA33BFF9225F745900B60463 /* stb_image.h */,
 				FA1956CD225DAA5E008A49F0 /* glad.c */,
-				FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */,
 			);
 			path = thirdLib;
 			sourceTree = "<group>";
@@ -111,13 +125,11 @@
 		FA265D1D22520076000E9433 /* TestOpenGL */ = {
 			isa = PBXGroup;
 			children = (
-				FA129CED2259F37F00659B73 /* Camera.cpp */,
-				FA129CEE2259F37F00659B73 /* Camera.hpp */,
 				FA265D1E22520076000E9433 /* main.cpp */,
 				FA129CF12259F53D00659B73 /* thirdLib */,
 				FA129CF02259F47D00659B73 /* resource */,
-				FA0EFBFB225498B6003791B5 /* Shader.cpp */,
-				FA0EFBFC225498B6003791B5 /* Shader.hpp */,
+				FA358184225F214700C9D2A8 /* model */,
+				FA12EF1E2260DC3F00EA8274 /* utils.h */,
 			);
 			path = TestOpenGL;
 			sourceTree = "<group>";
@@ -125,12 +137,28 @@
 		FA265D252252013B000E9433 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA35818B225F363000C9D2A8 /* libassimp.4.0.1.dylib */,
 				FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */,
 				FA265D2A22520C90000E9433 /* libglfw.3.2.dylib */,
 				FA265D2822520B0A000E9433 /* libGLEW.2.1.0.dylib */,
 				FA265D262252013B000E9433 /* OpenGL.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FA358184225F214700C9D2A8 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				FA129CEE2259F37F00659B73 /* Camera.hpp */,
+				FA358188225F342700C9D2A8 /* Model.cpp */,
+				FA358189225F342700C9D2A8 /* Model.hpp */,
+				FA129CED2259F37F00659B73 /* Camera.cpp */,
+				FA358185225F219300C9D2A8 /* Mesh.cpp */,
+				FA358186225F219300C9D2A8 /* Mesh.hpp */,
+				FA0EFBFC225498B6003791B5 /* Shader.hpp */,
+				FA0EFBFB225498B6003791B5 /* Shader.cpp */,
+			);
+			path = model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,7 +220,9 @@
 				FA129CEF2259F37F00659B73 /* Camera.cpp in Sources */,
 				FA265D1F22520076000E9433 /* main.cpp in Sources */,
 				FA0EFBFD225498B6003791B5 /* Shader.cpp in Sources */,
+				FA35818A225F342700C9D2A8 /* Model.cpp in Sources */,
 				FA1956CE225DAA5E008A49F0 /* glad.c in Sources */,
+				FA358187225F219300C9D2A8 /* Mesh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +348,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_NO_COMMON_BLOCKS = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -326,6 +357,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_NO_COMMON_BLOCKS = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
