@@ -74,6 +74,7 @@
 		FA37F8A62262FA9F00ECB7C7 /* metal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = metal.png; sourceTree = "<group>"; };
 		FA37F8A72263046300ECB7C7 /* single_color.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = single_color.fs; sourceTree = "<group>"; };
 		FA37F8A82263047E00ECB7C7 /* single_color.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = single_color.vs; sourceTree = "<group>"; };
+		FA37F8A92263105400ECB7C7 /* grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grass.png; sourceTree = "<group>"; };
 		FAEB8BAC2254F6E800AB1A7A /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -162,6 +163,7 @@
 				FA37F8A52262FA9F00ECB7C7 /* marble.jpg */,
 				FA37F8A62262FA9F00ECB7C7 /* metal.png */,
 				FA37F8A22262F7C900ECB7C7 /* scene.vs */,
+				FA37F8A92263105400ECB7C7 /* grass.png */,
 				FA37F8A72263046300ECB7C7 /* single_color.fs */,
 				FA37F8A82263047E00ECB7C7 /* single_color.vs */,
 				FA37F8A32262F7D500ECB7C7 /* scene.fs */,

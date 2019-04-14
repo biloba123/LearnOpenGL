@@ -162,6 +162,16 @@ int main() {
         5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
     
+    GLfloat transparentVertices[] = {
+        // positions       // texture Coords
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+    };
+    
     
     //cubo VAO
     GLuint cuboVAO, cuboVBO;
@@ -171,6 +181,21 @@ int main() {
     //顶点缓冲区对象
     glBindBuffer(GL_ARRAY_BUFFER, cuboVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+    //顶点属性配置
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)(sizeof(GLfloat) * 3));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+    
+    //transparent
+    GLuint transparentVAO, transparentVBO;
+    glGenVertexArrays(1, &transparentVAO);
+    glGenBuffers(1, &transparentVBO);
+    glBindVertexArray(transparentVAO);
+    //顶点缓冲区对象
+    glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
     //顶点属性配置
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)0);
     glEnableVertexAttribArray(0);
@@ -191,17 +216,18 @@ int main() {
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
     
+    stbi_set_flip_vertically_on_load(true);
     GLuint cuboTexture = loadTexture("/resource/marble.jpg");
     GLuint planeTexture = loadTexture("/resource/metal.png");
-    
+    GLuint transparentTexture = loadTexture("/resource/grass.png");
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     //深度测试
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     //模版测试
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+//    glEnable(GL_STENCIL_TEST);
+//    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -210,15 +236,13 @@ int main() {
         
         processInput(window);
         
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         mat4 model = mat4(1.0f);
         mat4 view = camera.getViewMatrix();
         mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
         //plane
-        glStencilFunc(GL_ALWAYS, 1, 0XFF);
-        glStencilMask(0x00);
         shader.use();
         model = translate(model, vec3(0.0f, -0.01f, 0.0f));
         shader.setMat4("model", model);
@@ -228,9 +252,12 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, planeTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
+        //transparent
+        glBindVertexArray(transparentVAO);
+        glBindTexture(GL_TEXTURE_2D, transparentTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
         //cubo
-        glStencilFunc(GL_ALWAYS, 1, 0XFF);
-        glStencilMask(0xFF);
         glBindVertexArray(cuboVAO);
         glBindTexture(GL_TEXTURE_2D, cuboTexture);
         for (int i = 0; i < 2; i++) {
@@ -240,24 +267,6 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         
-        //single color
-        glStencilFunc(GL_NOTEQUAL, 1, 0XFF);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
-        singleColorShader.use();
-        singleColorShader.setMat4("view", view);
-        singleColorShader.setMat4("projection", projection);
-        glBindVertexArray(cuboVAO);
-        for (int i = 0; i < 2; i++) {
-            model = mat4(1.0f);
-            model = translate(model, cuboPos[i]);
-            model = scale(model, vec3(1.05f));
-            shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        glEnable(GL_DEPTH_TEST);
-        glStencilMask(0xFF);
-        
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);
         //检查触发的事件
@@ -266,6 +275,7 @@ int main() {
     
     glDeleteVertexArrays(1, &cuboVAO);
     glDeleteVertexArrays(1, &planeVAO);
+    glDeleteVertexArrays(1, &transparentVAO);
     
     //释放资源
     glfwTerminate();
@@ -351,8 +361,8 @@ GLuint loadTexture(const char *relativePath) {
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
         
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     } else {
