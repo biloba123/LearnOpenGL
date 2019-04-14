@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <map>
 
 #include "Shader.hpp"
 #include "Camera.hpp"
@@ -172,6 +173,12 @@ int main() {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
     };
     
+    vector<vec3> transparentPositions;
+    transparentPositions.push_back(vec3(-1.5f,  0.0f, -0.48f));
+    transparentPositions.push_back(vec3( 1.5f,  0.0f,  0.51f));
+    transparentPositions.push_back(vec3( 0.0f,  0.0f,  0.7f));
+    transparentPositions.push_back(vec3(-0.3f,  0.0f, -2.3f));
+    transparentPositions.push_back(vec3( 0.5f,  0.0f, -0.6f));
     
     //cubo VAO
     GLuint cuboVAO, cuboVBO;
@@ -219,7 +226,7 @@ int main() {
     stbi_set_flip_vertically_on_load(true);
     GLuint cuboTexture = loadTexture("/resource/marble.jpg");
     GLuint planeTexture = loadTexture("/resource/metal.png");
-    GLuint transparentTexture = loadTexture("/resource/grass.png");
+    GLuint transparentTexture = loadTexture("/resource/window.png");
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     //深度测试
@@ -228,6 +235,9 @@ int main() {
     //模版测试
 //    glEnable(GL_STENCIL_TEST);
 //    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    //混合
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -252,11 +262,6 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, planeTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
-        //transparent
-        glBindVertexArray(transparentVAO);
-        glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        
         //cubo
         glBindVertexArray(cuboVAO);
         glBindTexture(GL_TEXTURE_2D, cuboTexture);
@@ -265,6 +270,22 @@ int main() {
             model = translate(model, cuboPos[i]);
             shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        
+        map<float, vec3> sorted;
+        for (int i = 0; i < transparentPositions.size(); i++) {
+            float distance = length(camera.Position - transparentPositions[i]);
+            sorted[distance] = transparentPositions[i];
+        }
+        
+        //transparent
+        glBindVertexArray(transparentVAO);
+        glBindTexture(GL_TEXTURE_2D, transparentTexture);
+        for (map<float, vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++) {
+            model = mat4(1.0f);
+            model = translate(model, it->second);
+            shader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
         
         //交换颜色缓冲（双缓冲）
