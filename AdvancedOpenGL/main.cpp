@@ -107,44 +107,41 @@ int main() {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         
         -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f
+    };
+    
+    GLubyte cuboElements[] = {
+        2, 1, 0, 0, 3, 2,
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8,
+        14, 13, 12, 12, 15, 14,
+        16, 17, 18, 18, 19, 16,
+        22, 21, 20, 20, 23, 22
     };
     
     vec3 cuboPos[] = {
@@ -165,12 +162,13 @@ int main() {
     
     GLfloat transparentVertices[] = {
         // positions       // texture Coords
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
     };
     
     vector<vec3> transparentPositions;
@@ -181,14 +179,27 @@ int main() {
     transparentPositions.push_back(vec3( 0.5f,  0.0f, -0.6f));
     
     //cubo VAO
-    GLuint cuboVAO, cuboVBO;
-    glGenVertexArrays(1, &cuboVAO);
-    glGenBuffers(1, &cuboVBO);
-    glBindVertexArray(cuboVAO);
-    //顶点缓冲区对象
-    glBindBuffer(GL_ARRAY_BUFFER, cuboVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-    //顶点属性配置
+    GLuint cubeVAO, cubeBuffers[2];
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(2, cubeBuffers);
+    glBindVertexArray(cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeBuffers[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeBuffers[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cuboElements), cuboElements, GL_STATIC_DRAW);
+    glBindVertexArray(0);
+    
+    //plane VAO
+    GLuint planeVAO, planeVBO;
+    glGenVertexArrays(1, &planeVAO);
+    glGenBuffers(1, &planeVBO);
+    glBindVertexArray(planeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)(sizeof(GLfloat) * 3));
@@ -204,19 +215,6 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
     //顶点属性配置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)(sizeof(GLfloat) * 3));
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-    
-    //plane VAO
-    GLuint planeVAO, planeVBO;
-    glGenVertexArrays(1, &planeVAO);
-    glGenBuffers(1, &planeVBO);
-    glBindVertexArray(planeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, planeVAO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, (GLvoid *)(sizeof(GLfloat) * 3));
@@ -263,22 +261,27 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //cubo
-        glBindVertexArray(cuboVAO);
+        //面剔除
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CW);
+        glCullFace(GL_FRONT);
+        glBindVertexArray(cubeVAO);
         glBindTexture(GL_TEXTURE_2D, cuboTexture);
         for (int i = 0; i < 2; i++) {
             model = mat4(1.0f);
             model = translate(model, cuboPos[i]);
             shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0);
         }
+        glDisable(GL_CULL_FACE);
         
         map<float, vec3> sorted;
         for (int i = 0; i < transparentPositions.size(); i++) {
             float distance = length(camera.Position - transparentPositions[i]);
             sorted[distance] = transparentPositions[i];
         }
-        
-        //transparent
+
+//        transparent
         glBindVertexArray(transparentVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
         for (map<float, vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++) {
@@ -293,10 +296,12 @@ int main() {
         //检查触发的事件
         glfwPollEvents();
     }
-    
-    glDeleteVertexArrays(1, &cuboVAO);
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(2, cubeBuffers);
     glDeleteVertexArrays(1, &planeVAO);
+    glDeleteBuffers(1, &planeVBO);
     glDeleteVertexArrays(1, &transparentVAO);
+    glDeleteBuffers(1, &transparentVBO);
     
     //释放资源
     glfwTerminate();
