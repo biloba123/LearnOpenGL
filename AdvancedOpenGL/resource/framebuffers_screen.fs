@@ -5,8 +5,36 @@ out vec4 FragColor;
 
 uniform sampler2D texture1;
 
+const float offset = 1.0 / 300.0;
+
 void main() {
-    vec4 texColor = texture(texture1, TexCoords);
-    float average = 0.2126 * texColor.r + 0.7152 * texColor.g + 0.0722 * texColor.b;
-    FragColor = vec4(vec3(average), 1.0);
+    vec2 offsets[9] = vec2[](
+        vec2(-offset, offset),
+        vec2(0, offset),
+        vec2(offset, offset),
+        vec2(-offset, 0),
+        vec2(0, 0),
+        vec2(offset, 0),
+        vec2(-offset, -offset),
+        vec2(0, -offset),
+        vec2(offset, -offset)
+    );
+    
+    float kernel[9] = float[](
+        -1, -1, -1,
+        -1, 8, -1,
+        -1, -1, -1
+    );
+    
+    vec3 samplerTex[9];
+    for (int i = 0; i < 9; i++) {
+        samplerTex[i] = vec3(texture(texture1, TexCoords.st + offsets[i]));
+    }
+    
+    vec3 col = vec3(0.0);
+    for (int i = 0; i < 9; i++) {
+        col += kernel[i] * samplerTex[i];
+    }
+    
+    FragColor = vec4(col, 1.0);
 }
