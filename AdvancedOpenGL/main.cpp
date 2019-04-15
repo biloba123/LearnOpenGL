@@ -97,8 +97,14 @@ int main() {
     free(vsPath);
     free(fsPath);
     
+    vsPath = getAbsolutePath("/resource/framebuffers_screen.vs");
+    fsPath = getAbsolutePath("/resource/framebuffers_screen.fs");
+    Shader screenShader(vsPath, fsPath);
+    free(vsPath);
+    free(fsPath);
     
-    if (!shader.ID) {
+    
+    if (!shader.ID || !singleColorShader.ID || !screenShader.ID) {
         return -1;
     }
     
@@ -171,6 +177,17 @@ int main() {
         1.0f,  0.5f,  0.0f,  1.0f,  0.0f
     };
     
+    GLfloat quadVertices[] = {
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+        1.0f, -1.0f,  1.0f, 0.0f,
+        
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        1.0f, -1.0f,  1.0f, 0.0f,
+        1.0f,  1.0f,  1.0f, 1.0f
+    };
+    
     vector<vec3> transparentPositions;
     transparentPositions.push_back(vec3(-1.5f,  0.0f, -0.48f));
     transparentPositions.push_back(vec3( 1.5f,  0.0f,  0.51f));
@@ -221,21 +238,57 @@ int main() {
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
     
+    //screen VAO
+    GLuint screenVAO, screenVBO;
+    glGenVertexArrays(1, &screenVAO);
+    glGenBuffers(1, &screenVBO);
+    glBindVertexArray(screenVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, screenVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, (GLvoid *)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, (GLvoid *)(sizeof(GLfloat) * 2));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+    
+    
     stbi_set_flip_vertically_on_load(true);
-    GLuint cuboTexture = loadTexture("/resource/marble.jpg");
+    GLuint cubeTexture = loadTexture("/resource/container.jpg");
     GLuint planeTexture = loadTexture("/resource/metal.png");
     GLuint transparentTexture = loadTexture("/resource/window.png");
     
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    //深度测试
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    //模版测试
-//    glEnable(GL_STENCIL_TEST);
-//    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    //混合
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GLuint framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    
+    //纹理附件
+    GLuint texColorBuffer;
+    glGenTextures(1, &texColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //附加到帧缓冲的颜色附件上
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+    
+    //渲染缓冲区对象附件
+    GLuint RBO;
+    glGenRenderbuffers(1, &RBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    //附加到帧缓冲的深度和模板附件
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+    
+    //检查完整性
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+        return -1;
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -244,7 +297,14 @@ int main() {
         
         processInput(window);
         
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         mat4 model = mat4(1.0f);
         mat4 view = camera.getViewMatrix();
@@ -266,7 +326,7 @@ int main() {
         glFrontFace(GL_CW);
         glCullFace(GL_FRONT);
         glBindVertexArray(cubeVAO);
-        glBindTexture(GL_TEXTURE_2D, cuboTexture);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
         for (int i = 0; i < 2; i++) {
             model = mat4(1.0f);
             model = translate(model, cuboPos[i]);
@@ -281,7 +341,7 @@ int main() {
             sorted[distance] = transparentPositions[i];
         }
 
-//        transparent
+        //transparent
         glBindVertexArray(transparentVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
         for (map<float, vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++) {
@@ -290,6 +350,20 @@ int main() {
             shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+        
+        screenShader.use();
+        glBindVertexArray(screenVAO);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);

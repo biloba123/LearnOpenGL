@@ -59,6 +59,9 @@
 		FA1544D62261E8C7006D9423 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FA16FB4F22559C1800010A03 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		FA1956CD225DAA5E008A49F0 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
+		FA1D39922264685B00F0C9EE /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
+		FA1D3993226468DE00F0C9EE /* framebuffers_screen.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = framebuffers_screen.vs; sourceTree = "<group>"; };
+		FA1D39942264693000F0C9EE /* framebuffers_screen.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = framebuffers_screen.fs; sourceTree = "<group>"; };
 		FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		FA265D1B22520076000E9433 /* TestOpenGL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenGL; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA265D1E22520076000E9433 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -161,12 +164,15 @@
 		FA1544DB2261E8DE006D9423 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				FA1D39922264685B00F0C9EE /* container.jpg */,
 				FA37F8A52262FA9F00ECB7C7 /* marble.jpg */,
 				FA37F8A62262FA9F00ECB7C7 /* metal.png */,
 				FA37F8AA2263295300ECB7C7 /* window.png */,
 				FA37F8A22262F7C900ECB7C7 /* scene.vs */,
 				FA37F8A92263105400ECB7C7 /* grass.png */,
 				FA37F8A72263046300ECB7C7 /* single_color.fs */,
+				FA1D39942264693000F0C9EE /* framebuffers_screen.fs */,
+				FA1D3993226468DE00F0C9EE /* framebuffers_screen.vs */,
 				FA37F8A82263047E00ECB7C7 /* single_color.vs */,
 				FA37F8A32262F7D500ECB7C7 /* scene.fs */,
 			);
