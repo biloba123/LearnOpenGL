@@ -166,7 +166,10 @@ int main() {
     };
     GLuint cubemapTexture = loadCubemap(faces);
     
-    Model ourModel("/Users/lvqingyang/Projects_OpenGL/nanosuit/nanosuit.obj");
+    Model ourModel("/Users/lvqingyang/Projects_OpenGL/nanosuit_reflection/nanosuit.obj");
+    
+    ourShader.use();
+    ourShader.setInt("skybox", 2);
     
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -187,8 +190,7 @@ int main() {
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
         ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setInt("skybox", 0);
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         
         // render the loaded model
