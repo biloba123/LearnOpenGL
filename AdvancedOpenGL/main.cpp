@@ -375,16 +375,6 @@ int main() {
         mat4 view = camera.getViewMatrix();
         mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         
-        //skybox
-        glDisable(GL_DEPTH_TEST);
-        skyboxShader.use();
-        skyboxShader.setMat4("view", mat4(mat3(view)));
-        skyboxShader.setMat4("projection", projection);
-        glBindVertexArray(skyboxVAO);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glEnable(GL_DEPTH_TEST);
-        
         //plane
         shader.use();
         model = translate(model, vec3(0.0f, -0.01f, 0.0f));
@@ -417,14 +407,24 @@ int main() {
         }
 
         //transparent
-        glBindVertexArray(transparentVAO);
-        glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (map<float, vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++) {
-            model = mat4(1.0f);
-            model = translate(model, it->second);
-            shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
+//        glBindVertexArray(transparentVAO);
+//        glBindTexture(GL_TEXTURE_2D, transparentTexture);
+//        for (map<float, vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++) {
+//            model = mat4(1.0f);
+//            model = translate(model, it->second);
+//            shader.setMat4("model", model);
+//            glDrawArrays(GL_TRIANGLES, 0, 6);
+//        }
+//
+        //skybox
+        glDepthFunc(GL_LEQUAL); //深度缓冲区内默认是1.0，为了使天空能写入，让等于能通过测试
+        skyboxShader.use();
+        skyboxShader.setMat4("view", mat4(mat3(view))); //移除偏移量
+        skyboxShader.setMat4("projection", projection);
+        glBindVertexArray(skyboxVAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDepthFunc(GL_LESS);
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);
