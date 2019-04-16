@@ -48,6 +48,14 @@
 		FA1ECF262259C7FB00E4EFF8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		FA1FBAB32265C20A00FF6BF5 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../../Projects_OpenGL/stb/stb_image.h; sourceTree = "<group>"; };
 		FA1FBAB42265C22900FF6BF5 /* stb_image_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_wrapper.h; sourceTree = "<group>"; };
+		FA1FBAB52265C6F400FF6BF5 /* top.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = top.jpg; sourceTree = "<group>"; };
+		FA1FBAB62265C6F400FF6BF5 /* front.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = front.jpg; sourceTree = "<group>"; };
+		FA1FBAB72265C6F400FF6BF5 /* left.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = left.jpg; sourceTree = "<group>"; };
+		FA1FBAB82265C6F400FF6BF5 /* bottom.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bottom.jpg; sourceTree = "<group>"; };
+		FA1FBAB92265C6F400FF6BF5 /* back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = back.jpg; sourceTree = "<group>"; };
+		FA1FBABA2265C6F400FF6BF5 /* right.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = right.jpg; sourceTree = "<group>"; };
+		FA1FBABB2265C80C00FF6BF5 /* skybox.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = skybox.vs; sourceTree = "<group>"; };
+		FA1FBABD2265C83900FF6BF5 /* skybox.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = skybox.fs; sourceTree = "<group>"; };
 		FA265D1B22520076000E9433 /* TestOpenGL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenGL; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA265D1E22520076000E9433 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FA265D262252013B000E9433 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -85,7 +93,15 @@
 				FA13A6DF225CD33500703F5A /* container2.png */,
 				FA2ADC662255BA91004BEA61 /* awesomeface.png */,
 				FA0EFBFE2254A20B003791B5 /* multiple_lights.vs */,
+				FA1FBABB2265C80C00FF6BF5 /* skybox.vs */,
 				FA0EFBFF2254A257003791B5 /* multiple_lights.fs */,
+				FA1FBAB92265C6F400FF6BF5 /* back.jpg */,
+				FA1FBAB82265C6F400FF6BF5 /* bottom.jpg */,
+				FA1FBAB62265C6F400FF6BF5 /* front.jpg */,
+				FA1FBABD2265C83900FF6BF5 /* skybox.fs */,
+				FA1FBAB72265C6F400FF6BF5 /* left.jpg */,
+				FA1FBABA2265C6F400FF6BF5 /* right.jpg */,
+				FA1FBAB52265C6F400FF6BF5 /* top.jpg */,
 				FA2E8DCD225B34F900DE9BB1 /* lamp.vs */,
 				FA13A6E2225CE46300703F5A /* container2_specular.png */,
 				FA2E8DCE225B352500DE9BB1 /* lamp.fs */,

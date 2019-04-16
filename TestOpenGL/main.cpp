@@ -92,16 +92,84 @@ int main() {
     string vsPath = getAbsolutePath("/resource/model_loading.vs"), fsPath = getAbsolutePath("/resource/model_loading.fs");
     Shader ourShader(vsPath.c_str(), fsPath.c_str());
 
+    vsPath = getAbsolutePath("/resource/skybox.vs");
+    fsPath = getAbsolutePath("/resource/skybox.fs");
+    Shader skyboxShader(vsPath.c_str(), fsPath.c_str());
     
-    if (!ourShader.ID) {
+    if (!ourShader.ID || !skyboxShader.ID) {
         return -1;
     }
+    
+    float skyboxVertices[] = {
+        // positions
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+        
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+        
+        -1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+        
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f
+    };
+    
+    //skybox VAO
+    GLuint skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (GLvoid *)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+    
+    vector<string> faces{
+        "/resource/right.jpg",
+        "/resource/left.jpg",
+        "/resource/top.jpg",
+        "/resource/bottom.jpg",
+        "/resource/front.jpg",
+        "/resource/back.jpg",
+    };
+    GLuint cubemapTexture = loadCubemap(faces);
     
     Model ourModel("/Users/lvqingyang/Projects_OpenGL/nanosuit/nanosuit.obj");
     
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -118,13 +186,28 @@ int main() {
         ourShader.use();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
+        ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setInt("skybox", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
+        
         ourModel.Draw(ourShader);
+        
+        //skybox
+        glDepthFunc(GL_LEQUAL); //深度缓冲区内默认是1.0，为了使天空能写入，让等于能通过测试
+        skyboxShader.use();
+        skyboxShader.setMat4("view", mat4(mat3(view))); //移除偏移量
+        skyboxShader.setMat4("projection", projection);
+        glBindVertexArray(skyboxVAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDepthFunc(GL_LESS);
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);

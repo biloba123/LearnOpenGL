@@ -10,9 +10,12 @@ struct Material {
 
 uniform Material material;
 uniform vec3 viewPos;
+uniform samplerCube skybox;
 
 out vec4 FragColor;
 
 void main() {
-    FragColor = texture(material.texture_specular1, TexCoords);
+    vec3 I = normalize(FragPos - viewPos);
+    vec3 R = refract(I, normalize(Normal), 1.0 / 1.33);
+    FragColor = texture(skybox, R);
 }
