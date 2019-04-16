@@ -59,6 +59,14 @@
 		FA1544D62261E8C7006D9423 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FA16FB4F22559C1800010A03 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		FA1956CD225DAA5E008A49F0 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
+		FA1B50C32264D36500040D4A /* skybox.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = skybox.vs; sourceTree = "<group>"; };
+		FA1B50C42264D37300040D4A /* skybox.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = skybox.fs; sourceTree = "<group>"; };
+		FA1B50C52264D73E00040D4A /* bottom.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bottom.jpg; sourceTree = "<group>"; };
+		FA1B50C62264D73E00040D4A /* left.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = left.jpg; sourceTree = "<group>"; };
+		FA1B50C72264D73E00040D4A /* front.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = front.jpg; sourceTree = "<group>"; };
+		FA1B50C82264D73E00040D4A /* right.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = right.jpg; sourceTree = "<group>"; };
+		FA1B50C92264D73E00040D4A /* back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = back.jpg; sourceTree = "<group>"; };
+		FA1B50CA2264D73E00040D4A /* top.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = top.jpg; sourceTree = "<group>"; };
 		FA1D39922264685B00F0C9EE /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		FA1D3993226468DE00F0C9EE /* framebuffers_screen.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = framebuffers_screen.vs; sourceTree = "<group>"; };
 		FA1D39942264693000F0C9EE /* framebuffers_screen.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = framebuffers_screen.fs; sourceTree = "<group>"; };
@@ -172,8 +180,16 @@
 				FA37F8A92263105400ECB7C7 /* grass.png */,
 				FA37F8A72263046300ECB7C7 /* single_color.fs */,
 				FA1D39942264693000F0C9EE /* framebuffers_screen.fs */,
+				FA1B50C92264D73E00040D4A /* back.jpg */,
+				FA1B50C52264D73E00040D4A /* bottom.jpg */,
+				FA1B50C72264D73E00040D4A /* front.jpg */,
+				FA1B50C62264D73E00040D4A /* left.jpg */,
+				FA1B50C82264D73E00040D4A /* right.jpg */,
+				FA1B50CA2264D73E00040D4A /* top.jpg */,
+				FA1B50C32264D36500040D4A /* skybox.vs */,
 				FA1D3993226468DE00F0C9EE /* framebuffers_screen.vs */,
 				FA37F8A82263047E00ECB7C7 /* single_color.vs */,
+				FA1B50C42264D37300040D4A /* skybox.fs */,
 				FA37F8A32262F7D500ECB7C7 /* scene.fs */,
 			);
 			path = resource;
