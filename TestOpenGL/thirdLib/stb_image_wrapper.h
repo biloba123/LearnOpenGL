@@ -2,7 +2,7 @@
 //  stb_image_wrapper.h
 //  TestOpenGL
 //
-//  Created by 吕晴阳 on 2019/4/3.
+//  Created by 吕晴阳 on 2019/4/16.
 //  Copyright © 2019 吕晴阳. All rights reserved.
 //
 
