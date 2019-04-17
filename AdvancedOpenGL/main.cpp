@@ -334,18 +334,11 @@ int main() {
     GLuint skyboxVAO, skyboxVBO, skyboxEBO;
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
-    glGenBuffers(1, &skyboxEBO);
     glBindVertexArray(skyboxVAO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24 * 3, NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_READ_BUFFER, cubeBuffers[0]);
-    glCopyBufferSubData(GL_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(GLfloat) * 24 * 3);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (GLvoid *)0);
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 6 * 6, NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_READ_BUFFER, cubeBuffers[1]);
-    glCopyBufferSubData(GL_READ_BUFFER, GL_ELEMENT_ARRAY_BUFFER, 0, 0, sizeof(GLubyte) * 6 * 6);
     glBindVertexArray(0);
     
     
@@ -399,6 +392,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_PROGRAM_POINT_SIZE);
     //渲染循环
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -438,7 +432,7 @@ int main() {
             model = mat4(1.0f);
             model = translate(model, cuboPos[i]);
             shader.setMat4("model", model);
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0);
+            glDrawElements(GL_POINTS, 36, GL_UNSIGNED_BYTE, (GLvoid *)0);
         }
         glDisable(GL_CULL_FACE);
         
@@ -464,8 +458,8 @@ int main() {
         skyboxShader.setMat4("view", mat4(mat3(view))); //移除偏移量
         skyboxShader.setMat4("projection", projection);
         glBindVertexArray(skyboxVAO);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         glDepthFunc(GL_LESS);
         
         //交换颜色缓冲（双缓冲）
