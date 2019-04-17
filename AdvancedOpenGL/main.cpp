@@ -422,9 +422,9 @@ int main() {
         
         //cubo
         //面剔除
-        glEnable(GL_CULL_FACE);
-        glFrontFace(GL_CW);
-        glCullFace(GL_FRONT);
+//        glEnable(GL_CULL_FACE);
+//        glFrontFace(GL_CW);
+//        glCullFace(GL_FRONT);
         glBindVertexArray(cubeVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         for (int i = 0; i < 2; i++) {
