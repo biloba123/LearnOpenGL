@@ -87,23 +87,19 @@ int main() {
     
     
     //创建链接着色器程序对象
-    string vsPath = getAbsolutePath("/resource/scene.vs"), fsPath = getAbsolutePath("/resource/scene.fs");
-    Shader shader(vsPath.c_str(), fsPath.c_str());
+    string vsPath = getAbsolutePath("/resource/scene.vs"), fsPath = getAbsolutePath("/resource/scene.fs"), gsPath = getAbsolutePath("/resource/scene.gs");
+    Shader shader(vsPath.c_str(), fsPath.c_str(), gsPath.c_str());
     
     vsPath = getAbsolutePath("/resource/single_color.vs");
     fsPath = getAbsolutePath("/resource/single_color.fs");
     Shader singleColorShader(vsPath.c_str(), fsPath.c_str());
-    
-    vsPath = getAbsolutePath("/resource/framebuffers_screen.vs");
-    fsPath = getAbsolutePath("/resource/framebuffers_screen.fs");
-    Shader screenShader(vsPath.c_str(), fsPath.c_str());
     
     vsPath = getAbsolutePath("/resource/skybox.vs");
     fsPath = getAbsolutePath("/resource/skybox.fs");
     Shader skyboxShader(vsPath.c_str(), fsPath.c_str());
     
     
-    if (!shader.ID || !singleColorShader.ID || !screenShader.ID || !skyboxShader.ID) {
+    if (!shader.ID || !singleColorShader.ID || !skyboxShader.ID) {
         return -1;
     }
     

@@ -13,9 +13,11 @@ void main() {
     vec3 R = refract(I, normalize(Normal), ratio);
     vec4 texColor = texture(skybox, R);
     
-    if (gl_FrontFacing) {
-        FragColor = vec4(vec3(1.0, 1.0, 0.0) * (gl_FragCoord.x / 800), 1.0);
-    } else {
-        FragColor = vec4(vec3(0.0, 1.0, 1.0) * (gl_FragCoord.x / 800), 1.0);
-    }
+//    if (gl_FrontFacing) {
+//        FragColor = vec4(vec3(1.0, 1.0, 0.0) * (gl_FragCoord.x / 800), 1.0);
+//    } else {
+//        FragColor = vec4(vec3(0.0, 1.0, 1.0) * (gl_FragCoord.x / 800), 1.0);
+//    }
+    
+    FragColor = texColor;
 }

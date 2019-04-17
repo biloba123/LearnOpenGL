@@ -67,6 +67,7 @@
 		FA1B50C82264D73E00040D4A /* right.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = right.jpg; sourceTree = "<group>"; };
 		FA1B50C92264D73E00040D4A /* back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = back.jpg; sourceTree = "<group>"; };
 		FA1B50CA2264D73E00040D4A /* top.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = top.jpg; sourceTree = "<group>"; };
+		FA1BF80D22671EC70054535E /* scene.gs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = scene.gs; sourceTree = "<group>"; };
 		FA1D39922264685B00F0C9EE /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		FA1D3993226468DE00F0C9EE /* framebuffers_screen.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = framebuffers_screen.vs; sourceTree = "<group>"; };
 		FA1D39942264693000F0C9EE /* framebuffers_screen.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = framebuffers_screen.fs; sourceTree = "<group>"; };
@@ -178,6 +179,7 @@
 				FA37F8AA2263295300ECB7C7 /* window.png */,
 				FA37F8A22262F7C900ECB7C7 /* scene.vs */,
 				FA37F8A92263105400ECB7C7 /* grass.png */,
+				FA1BF80D22671EC70054535E /* scene.gs */,
 				FA37F8A72263046300ECB7C7 /* single_color.fs */,
 				FA1D39942264693000F0C9EE /* framebuffers_screen.fs */,
 				FA1B50C92264D73E00040D4A /* back.jpg */,

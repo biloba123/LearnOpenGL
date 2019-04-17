@@ -24,17 +24,18 @@ class Shader {
 public:
     GLuint ID;
     
-    Shader(const char *vertexPath, const char *fragmentPath) {
-        string vertexCode, fragmentCode;
+    Shader(const char *vertexPath, const char *fragmentPath, const char *geometryPath = NULL) {
+        string vertexCode, fragmentCode, geometryCode;
         
         try {
             vertexCode = readContent(vertexPath);
             fragmentCode = readContent(fragmentPath);
+            geometryCode = readContent(geometryPath);
         } catch (ifstream::failure e) {
             cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << endl;
         }
         
-        ID = loadProgram(vertexCode.c_str(), fragmentCode.c_str());
+        ID = loadProgram(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.empty() ? NULL : geometryCode.c_str());
     }
     
     void use() {
@@ -68,6 +69,8 @@ public:
     
 private:
     string readContent(const char *path) {
+        if (!path) return "";
+        
         string content;
         ifstream file;
         
@@ -87,6 +90,8 @@ private:
     }
     
     GLuint loadShader (GLenum type, const char *shaderSrc) {
+        if (!shaderSrc) return 0;
+        
         GLuint shader = glCreateShader(type);
         glShaderSource(shader, 1, &shaderSrc, NULL);
         glCompileShader(shader);
@@ -109,9 +114,10 @@ private:
         return shader;
     }
     
-    GLuint loadProgram(const char *vertShaderSrc, const char *fragShaderSrc) {
+    GLuint loadProgram(const char *vertShaderSrc, const char *fragShaderSrc, const char *geomShaderSrc) {
         GLuint vShader = loadShader(GL_VERTEX_SHADER, vertShaderSrc);
         GLuint fShader = loadShader(GL_FRAGMENT_SHADER, fragShaderSrc);
+        GLuint gShader = loadShader(GL_GEOMETRY_SHADER, geomShaderSrc);
         
         if (!vShader || !fShader) {
             return 0;
@@ -120,6 +126,7 @@ private:
         GLuint program = glCreateProgram();
         glAttachShader(program, vShader);
         glAttachShader(program, fShader);
+        if (gShader) glAttachShader(program, gShader);
         glLinkProgram(program);
         
         GLint success;
@@ -135,12 +142,14 @@ private:
             
             glDeleteShader(vShader);
             glDeleteShader(fShader);
+            if (gShader) glDeleteShader(gShader);
             glDeleteProgram(program);
             return 0;
         }
         
         glDeleteShader(vShader);
         glDeleteShader(fShader);
+        if (gShader) glDeleteShader(gShader);
         return program;
     }
 
