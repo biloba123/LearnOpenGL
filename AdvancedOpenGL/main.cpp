@@ -108,36 +108,67 @@ int main() {
     }
     
     GLfloat cubeVertices[] = {
-        //positions        //normals
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        //positions
+        -0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
         
-        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
         
-        -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
         
-        0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
         
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
         
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        
+        //normals
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        
+         -1.0f, 0.0f, 0.0f,
+         -1.0f, 0.0f, 0.0f,
+         -1.0f, 0.0f, 0.0f,
+         -1.0f, 0.0f, 0.0f,
+        
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        
+        0.0f, -1.0f, 1.0f,
+        0.0f, -1.0f, 1.0f,
+        0.0f, -1.0f, 1.0f,
+        0.0f, -1.0f, 1.0f,
+        
+         0.0f, 1.0f, 1.0f,
+         0.0f, 1.0f, 1.0f,
+         0.0f, 1.0f, 1.0f,
+         0.0f, 1.0f, 1.0f,
     };
     
     GLubyte cuboElements[] = {
@@ -248,11 +279,14 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, cubeBuffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * 24 * sizeof(float)));
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeBuffers[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cuboElements), cuboElements, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cuboElements), NULL, GL_STATIC_DRAW);
+    void *ptr = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+    memcpy(ptr, cuboElements, sizeof(cuboElements));
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
     glBindVertexArray(0);
     
     //plane VAO
@@ -297,14 +331,21 @@ int main() {
     glBindVertexArray(0);
     
     //skybox VAO
-    GLuint skyboxVAO, skyboxVBO;
+    GLuint skyboxVAO, skyboxVBO, skyboxEBO;
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
+    glGenBuffers(1, &skyboxEBO);
     glBindVertexArray(skyboxVAO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24 * 3, NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_READ_BUFFER, cubeBuffers[0]);
+    glCopyBufferSubData(GL_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(GLfloat) * 24 * 3);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (GLvoid *)0);
     glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 6 * 6, NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_READ_BUFFER, cubeBuffers[1]);
+    glCopyBufferSubData(GL_READ_BUFFER, GL_ELEMENT_ARRAY_BUFFER, 0, 0, sizeof(GLubyte) * 6 * 6);
     glBindVertexArray(0);
     
     
@@ -424,7 +465,7 @@ int main() {
         skyboxShader.setMat4("projection", projection);
         glBindVertexArray(skyboxVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0);
         glDepthFunc(GL_LESS);
         
         //交换颜色缓冲（双缓冲）
