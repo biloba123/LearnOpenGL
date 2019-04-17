@@ -61,6 +61,11 @@ public:
         glUniform3fv(glGetUniformLocation(ID, name), 1, glm::value_ptr(vec));
     }
     
+    void setBindpoint(const char *blockname, GLuint bindingPoint) {
+        GLuint index = glGetUniformBlockIndex(ID, blockname);
+        glUniformBlockBinding(ID, index, bindingPoint);
+    }
+    
 private:
     string readContent(const char *path) {
         string content;

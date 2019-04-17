@@ -6,8 +6,11 @@ out vec3 Position;
 out vec3 Normal;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+
+layout (std140) uniform Matrices {
+    mat4 view;
+    mat4 projection;
+};
 
 void main() {
     gl_Position = projection * view * model * vec4(aPos, 1.0);

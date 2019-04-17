@@ -389,6 +389,18 @@ int main() {
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
+    //统一变量缓冲区
+    shader.setBindpoint("Matrices", 0);
+    skyboxShader.setBindpoint("Matrices", 0);
+    GLuint UBO;
+    glGenBuffers(1, &UBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, NULL, GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO);
+    mat4 projection = perspective(radians(45.0f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(projection));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -407,14 +419,15 @@ int main() {
     
         mat4 model = mat4(1.0f);
         mat4 view = camera.getViewMatrix();
-        mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        
+        glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(view));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
         
         //plane
         shader.use();
         model = translate(model, vec3(0.0f, -0.01f, 0.0f));
         shader.setMat4("model", model);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
         shader.setVec3("viewPos", vec3(model * vec4(camera.Position, 1.0)));
 //        glBindVertexArray(planeVAO);
 //        glBindTexture(GL_TEXTURE_2D, planeTexture);
@@ -454,8 +467,6 @@ int main() {
         //skybox
         glDepthFunc(GL_LEQUAL); //深度缓冲区内默认是1.0，为了使天空能写入，让等于能通过测试
         skyboxShader.use();
-        skyboxShader.setMat4("view", mat4(mat3(view))); //移除偏移量
-        skyboxShader.setMat4("projection", projection);
         glBindVertexArray(skyboxVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
