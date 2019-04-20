@@ -54,7 +54,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     //核心模式
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
+//    glfwWindowHint(GLFW_SAMPLES, 4);
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
@@ -99,8 +99,12 @@ int main() {
     fsPath = getAbsolutePath("/resource/skybox.fs");
     Shader skyboxShader(vsPath.c_str(), fsPath.c_str());
     
+    vsPath = getAbsolutePath("/resource/framebuffers_screen.vs");
+    fsPath = getAbsolutePath("/resource/framebuffers_screen.fs");
+    Shader screenShader(vsPath.c_str(), fsPath.c_str());
     
-    if (!shader.ID || !singleColorShader.ID || !skyboxShader.ID) {
+    
+    if (!shader.ID || !singleColorShader.ID || !skyboxShader.ID || !screenShader.ID) {
         return -1;
     }
     
@@ -369,29 +373,48 @@ int main() {
     GLuint framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    
     //纹理附件
     GLuint texColorBuffer;
     glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, texColorBuffer);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, GL_TRUE);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+    //附加到帧缓冲的颜色附件上
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, texColorBuffer, 0);
+    //渲染缓冲区对象附件
+    GLuint RBO;
+    glGenRenderbuffers(1, &RBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4,  GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    //附加到帧缓冲的深度和模板附件
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+    
+    //检查完整性
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+        return -1;
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    GLuint framebuffer1;
+    glGenFramebuffers(1, &framebuffer1);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer1);
+    GLuint texColorBuffer1;
+    glGenTextures(1, &texColorBuffer1);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffer1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid *)0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
     //附加到帧缓冲的颜色附件上
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
-    
-    //渲染缓冲区对象附件
-    GLuint RBO;
-    glGenRenderbuffers(1, &RBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    //附加到帧缓冲的深度和模板附件
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
-    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer1, 0);
     //检查完整性
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
@@ -422,7 +445,7 @@ int main() {
         
         processInput(window);
         
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -450,16 +473,17 @@ int main() {
 //        glEnable(GL_CULL_FACE);
 //        glFrontFace(GL_CW);
 //        glCullFace(GL_FRONT);
+        
         glBindVertexArray(cubeVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0, 9);
         glDisable(GL_CULL_FACE);
         
-        map<float, vec3> sorted;
-        for (int i = 0; i < transparentPositions.size(); i++) {
-            float distance = length(camera.Position - transparentPositions[i]);
-            sorted[distance] = transparentPositions[i];
-        }
+//        map<float, vec3> sorted;
+//        for (int i = 0; i < transparentPositions.size(); i++) {
+//            float distance = length(camera.Position - transparentPositions[i]);
+//            sorted[distance] = transparentPositions[i];
+//        }
 
         //transparent
 //        glBindVertexArray(transparentVAO);
@@ -478,6 +502,21 @@ int main() {
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glDepthFunc(GL_LESS);
+        
+        //位块传递
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer1);
+        glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        screenShader.use();
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer1);
+        glBindVertexArray(screenVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //交换颜色缓冲（双缓冲）
         glfwSwapBuffers(window);
