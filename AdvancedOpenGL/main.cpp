@@ -176,9 +176,11 @@ int main() {
         22, 21, 20, 20, 23, 22
     };
     
-    vec3 cuboPos[] = {
-        vec3(-1.0f, 0.0f, -1.0f),
+    vec3 cubePos[] = {
         vec3(2.0f, 0.0f, 0.0f),
+        vec3(-2.0f, 0.0f, 0.0f),
+        vec3(0.0f, 2.0f, 0.0f),
+        vec3(0.0f, -2.0f, 0.0f),
     };
     
     float planeVertices[] = {
@@ -397,6 +399,13 @@ int main() {
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(projection));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     
+    shader.use();
+    for (int i = 0; i < 4; i++) {
+        mat4 model = mat4(1.0f);
+        model = translate(model, cubePos[i]);
+        shader.setMat4(("models[" + to_string(i) + "]").c_str(), model);
+    }
+    
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -436,12 +445,7 @@ int main() {
 //        glCullFace(GL_FRONT);
         glBindVertexArray(cubeVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        for (int i = 0; i < 2; i++) {
-            model = mat4(1.0f);
-            model = translate(model, cuboPos[i]);
-            shader.setMat4("model", model);
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0);
-        }
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (GLvoid *)0, 4);
         glDisable(GL_CULL_FACE);
         
         map<float, vec3> sorted;

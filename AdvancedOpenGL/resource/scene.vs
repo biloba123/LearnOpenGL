@@ -7,7 +7,7 @@ out VS_OUT {
     vec3 Normal;
 } vs_out;
 
-uniform mat4 model;
+uniform mat4 models[4];
 
 layout (std140) uniform Matrices {
     mat4 view;
@@ -15,6 +15,7 @@ layout (std140) uniform Matrices {
 };
 
 void main() {
+    mat4 model = models[gl_InstanceID];
     gl_Position = projection * view * model * vec4(aPos, 1.0);
     vs_out.Position = vec3(model * vec4(aPos, 1.0));
     vs_out.Normal = mat3(transpose(inverse(model))) * aNormal;
